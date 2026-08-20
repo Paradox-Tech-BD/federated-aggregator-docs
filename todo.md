@@ -67,3 +67,12 @@
 - [x] Create original Mermaid ERD, artifact-flow, and retention/lineage diagrams.
 - [x] Add the detailed data-management chapter and diagrams to the Vercel-hosted documentation site.
 - [x] Verify Mermaid rendering, mobile layout, and Vercel static build, then commit and push the update using the user's Git identity.
+
+## Workflow Design and Orchestration
+
+- [x] Extract the supplied workflow example’s structural depth without reusing its unrelated actors, routes, or flows.
+- [x] Research federated round lifecycle, FedProx provenance, local-versus-central evaluation, and hospital-local data boundaries.
+- [x] Write the original workflow specification with protocol activation, round launch, submission validation, aggregation, release, rollback, and recovery semantics.
+- [x] Add the Workflow Design chapter, six original Mermaid diagrams, responsive navigation, research sources, and chronology entry.
+- [x] Verify desktop/mobile rendering, type-checking, and Vercel static output without storage-proxy references.
+- [x] Commit, push, and checkpoint the workflow-design documentation update using the user's Git identity.

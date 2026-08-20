@@ -10,8 +10,9 @@ const chapters = [
   ["02", "Integrated requirements", "Connected research, stakeholder, governance, workflow, security, data, model, and technical requirements."],
   ["03", "System specification", "Authentication, backend middleware, artifact pipeline, queues, worker contract, and release ledger."],
   ["04", "Architecture", "Round state machine, artifact flow, validation, and release bundle."],
-  ["05", "Data management", "Mermaid schema groups, local-data boundary, artifact lineage, retention, and release evidence."],
-  ["06", "API reference", "Versioned OpenAPI contract with safe mock/local request tooling."],
+  ["05", "Workflow design", "Original Mermaid flows for protocol activation, round orchestration, update validation, aggregation, release approval, and recovery."],
+  ["06", "Data management", "Mermaid schema groups, local-data boundary, artifact lineage, retention, and release evidence."],
+  ["07", "API reference", "Versioned OpenAPI contract with safe mock/local request tooling."],
   ["LOG", "Research log", "Chronological decisions, failed runs, corrective actions, and accepted evidence."],
 ];
 
@@ -57,15 +58,15 @@ export default function Home() {
       <section className="reading-compass" aria-label="Documentation reading guidance">
         <div className="compass-mark"><GitBranch size={18} /></div>
         <div><span>START HERE</span><h2>Read the requirements before the interface contract.</h2></div>
-        <p>The documentation is sequenced as a decision trail: purpose, integrated requirements, technical response, architecture, then the public API contract.</p>
+        <p>The documentation is sequenced as a decision trail: purpose, integrated requirements, technical response, architecture, workflow controls, evidence data, then the public API contract.</p>
         <Link href="/requirements">Open requirements <ArrowUpRight size={16} /></Link>
       </section>
 
       <section className="reading-grid">
         <div className="chapter-list">
-          <div className="section-heading"><span>CORE DOCUMENT INDEX</span><span>6 READING PATHS</span></div>
+          <div className="section-heading"><span>CORE DOCUMENT INDEX</span><span>7 READING PATHS</span></div>
           {chapters.map(([index, title, description]) => (
-            <Link href={title === "Integrated requirements" ? "/requirements" : title === "System specification" ? "/technical-requirements" : title === "Architecture" ? "/architecture" : title === "Data management" ? "/data-management" : title === "API reference" ? "/api" : title === "Research log" ? "/research-log" : "/"} className="chapter-row" key={index}>
+            <Link href={title === "Integrated requirements" ? "/requirements" : title === "System specification" ? "/technical-requirements" : title === "Architecture" ? "/architecture" : title === "Workflow design" ? "/workflow-design" : title === "Data management" ? "/data-management" : title === "API reference" ? "/api" : title === "Research log" ? "/research-log" : "/"} className="chapter-row" key={index}>
               <span className="chapter-row-index">{index}</span>
               <div><h3>{title}</h3><p>{description}</p></div>
               <ArrowUpRight size={18} />

@@ -161,8 +161,8 @@ const groups = [
 export default function DataManagement() {
   return (
     <div className="doc-page data-page">
-      <header className="doc-topbar"><p>05 / DATA MANAGEMENT</p><StatusStamp status="PROVISIONAL" /></header>
-      <section className="page-title"><p className="folio">05.0 / DATA, ARTIFACT, AND EVIDENCE LINEAGE</p><h1>Store the proof.<br /><i>Not the patient data.</i></h1><p>The aggregator needs enough durable information to reconstruct a research release, resolve failures, and govern access—while never becoming a centralized hospital-data repository.</p></section>
+      <header className="doc-topbar"><p>06 / DATA MANAGEMENT</p><StatusStamp status="PROVISIONAL" /></header>
+      <section className="page-title"><p className="folio">06.0 / DATA, ARTIFACT, AND EVIDENCE LINEAGE</p><h1>Store the proof.<br /><i>Not the patient data.</i></h1><p>The aggregator needs enough durable information to reconstruct a research release, resolve failures, and govern access—while never becoming a centralized hospital-data repository.</p></section>
 
       <section className="data-charter"><div><Database size={22} /><span>DATA MANAGEMENT PRINCIPLE</span></div><h2>Patient data remains under institutional control. The core stores governance facts, immutable protocol records, verified artifact descriptors, scientific lineage, and release evidence.</h2><StatusStamp status="VALIDATED" /></section>
 

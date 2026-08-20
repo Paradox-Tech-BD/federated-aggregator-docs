@@ -10,6 +10,7 @@ import NotFound from "@/pages/NotFound";
 import Requirements from "@/pages/Requirements";
 import ResearchLog from "@/pages/ResearchLog";
 import TechnicalRequirements from "@/pages/TechnicalRequirements";
+import WorkflowDesign from "@/pages/WorkflowDesign";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -22,6 +23,7 @@ function Router() {
         <Route path="/requirements" component={Requirements} />
         <Route path="/technical-requirements" component={TechnicalRequirements} />
         <Route path="/architecture" component={Architecture} />
+        <Route path="/workflow-design" component={WorkflowDesign} />
         <Route path="/data-management" component={DataManagement} />
         <Route path="/api" component={ApiReference} />
         <Route path="/research-log" component={ResearchLog} />

@@ -86,3 +86,13 @@
 - [x] Write original Mermaid system, sequence, deployment, trust-boundary, and event-flow diagrams plus an in-depth implementation specification.
 - [x] Add or expand the responsive documentation chapter and update the Notion/research ledgers.
 - [x] Verify diagrams, mobile layout, TypeScript, Vercel static output, then commit, push, and checkpoint under the user's Git identity.
+
+## Modular Codebase Architecture and Engineering Standards
+
+- [x] Analyze the clean-room repository, prior implementation decisions, and the supplied system scope to separate reusable references from new production modules.
+- [x] Research comparable federated-learning/control-plane repositories plus authoritative TypeScript, Python, modular-monolith, clean-code, and testing guidance.
+- [x] Define the monorepo folders, package ownership, dependency direction, public interfaces, shared libraries, adapters, supplementary services, and explicit non-dependencies.
+- [x] Specify coding rules, naming, error/result strategy, configuration/secrets discipline, data contracts, observability, review criteria, and enforceable quality gates.
+- [x] Specify a layered test strategy for unit, integration, contract, property, deterministic ML, security, migration, end-to-end, and resilience tests.
+- [x] Add the responsive engineering-standards chapter, original Mermaid diagrams, research/source register, and chronological/Notion decisions.
+- [x] Verify, commit, push, and checkpoint the update under the user Git identity.

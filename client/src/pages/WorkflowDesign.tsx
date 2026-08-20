@@ -149,8 +149,8 @@ const exceptionRows = [
 export default function WorkflowDesign() {
   return (
     <div className="doc-page workflow-page">
-      <header className="doc-topbar"><p>05 / WORKFLOW DESIGN</p><StatusStamp status="PROVISIONAL" /></header>
-      <section className="page-title"><p className="folio">05.0 / GOVERNED ROUND-TO-RELEASE ORCHESTRATION</p><h1>Make every transition<br /><i>answerable to evidence.</i></h1><p>The Aggregator Core coordinates a research release from protocol activation through accepted update artifacts, deterministic aggregation, review, publication, and recovery—without becoming a hospital-data repository.</p></section>
+      <header className="doc-topbar"><p>06 / WORKFLOW DESIGN</p><StatusStamp status="PROVISIONAL" /></header>
+      <section className="page-title"><p className="folio">06.0 / GOVERNED ROUND-TO-RELEASE ORCHESTRATION</p><h1>Make every transition<br /><i>answerable to evidence.</i></h1><p>The Aggregator Core coordinates a research release from protocol activation through accepted update artifacts, deterministic aggregation, review, publication, and recovery—without becoming a hospital-data repository.</p></section>
 
       <section className="workflow-charter"><div className="workflow-charter-icon"><Workflow size={25} /></div><div><span>WORKFLOW PRINCIPLE</span><h2>A model file is not a release. A release is a versioned decision supported by compatible inputs, verifiable computation, evaluation evidence, and accountable approval.</h2></div><StatusStamp status="VALIDATED" /></section>
 

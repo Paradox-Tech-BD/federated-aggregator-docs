@@ -1,0 +1,56 @@
+/* Research Ledger engineering chapter: a build-system field guide with hard boundaries, restrained ruled panels, and evidence-first verification. */
+.engineering-page { max-width: 1140px; }
+.engineering-title { max-width: 1030px; }
+.engineering-charter { display: grid; grid-template-columns: 62px minmax(0, 1fr) auto; gap: 22px; align-items: start; margin: 4px 0 39px; padding: 27px 29px; background: #e2efed; border-left: 4px solid #0d7c78; }
+.engineering-charter-icon { width: 46px; height: 46px; display: grid; place-items: center; color: #0d6965; border: 1px solid #80afa9; }
+.engineering-charter span, .engineering-contract-note span, .engineering-service-strip span, .engineering-gates span { color: #0d6965; font: 500 10px/1 'IBM Plex Mono', monospace; letter-spacing: .1em; }
+.engineering-charter h2 { max-width: 860px; margin: 11px 0 0; font-size: 31px; line-height: 1.08; }
+.engineering-section { margin-top: 42px; }
+.engineering-section .mermaid-panel { margin-top: 17px; }
+.engineering-principles { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 18px; border: 1px solid #d7d1c4; background: #fffdf8; }
+.engineering-principles article { min-height: 212px; padding: 22px; }
+.engineering-principles article + article { border-left: 1px solid #d7d1c4; }
+.engineering-principles span, .engineering-quality-list span { color: #0d7c78; font: 500 10px/1 'IBM Plex Mono', monospace; }
+.engineering-principles h3 { margin: 17px 0 8px; font-size: 25px; line-height: 1.05; }
+.engineering-principles p { margin: 0; color: #59686b; font-size: 13px; line-height: 1.57; }
+.engineering-capability-table { margin-top: 18px; border: 1px solid #d7d1c4; background: #fffdf8; }
+.engineering-capability-head, .engineering-capability-table article { display: grid; grid-template-columns: .8fr 1.35fr .85fr; gap: 23px; padding: 16px 20px; }
+.engineering-capability-head { color: #5c6e71; background: #eee9df; font: 500 9px/1 'IBM Plex Mono', monospace; letter-spacing: .09em; }
+.engineering-capability-table article { border-top: 1px solid #d7d1c4; }
+.engineering-capability-table h3 { margin: 0; font-size: 21px; line-height: 1.1; }
+.engineering-capability-table p { margin: 0; color: #59686b; font-size: 13px; line-height: 1.5; }
+.engineering-capability-table p:last-child { color: #875843; }
+.engineering-contract-note { display: grid; grid-template-columns: 35px .85fr 1.3fr; gap: 18px; align-items: start; margin-top: 18px; padding: 26px 28px; background: #223139; }
+.engineering-contract-note > svg { color: #d9bf6d; margin-top: 3px; }
+.engineering-contract-note span { color: #afd0ca; }
+.engineering-contract-note h2 { margin: 12px 0 0; color: #fffdf8; font-size: 29px; line-height: 1.06; }
+.engineering-contract-note p { margin: 0; color: #c0cecb; line-height: 1.61; }
+.engineering-reuse-list { margin-top: 18px; border-top: 1px solid #d7d1c4; }
+.engineering-reuse-list article { display: grid; grid-template-columns: 142px minmax(190px, .75fr) minmax(0, 1.45fr); gap: 20px; align-items: start; padding: 17px 8px; border-bottom: 1px solid #d7d1c4; }
+.reuse-tag { width: fit-content; padding: 6px 8px; border: 1px solid; font: 600 9px/1 'IBM Plex Mono', monospace; letter-spacing: .07em; }
+.reuse-tag.adapt, .reuse-tag.reuse-as-fixtures { color: #0d6965; background: #dcecea; border-color: #91bcb7; }
+.reuse-tag.reference-only, .reuse-tag.defer { color: #73590f; background: #f8edcf; border-color: #c9ae5e; }
+.reuse-tag.out-of-scope { color: #9f563d; background: #fae4dc; border-color: #d8a091; }
+.engineering-reuse-list h3 { margin: 0; font-size: 23px; line-height: 1.1; }
+.engineering-reuse-list p { margin: 0; color: #59686b; font-size: 14px; line-height: 1.54; }
+.engineering-test-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 18px; border: 1px solid #d7d1c4; background: #fffdf8; }
+.engineering-test-grid article { min-height: 220px; padding: 23px; }
+.engineering-test-grid article + article { border-left: 1px solid #d7d1c4; }
+.engineering-test-grid svg { color: #0d7c78; }
+.engineering-test-grid h3 { margin: 16px 0 8px; font-size: 26px; line-height: 1.05; }
+.engineering-test-grid p { margin: 0; color: #59686b; font-size: 13px; line-height: 1.58; }
+.engineering-service-strip { display: grid; grid-template-columns: .95fr 1.35fr auto; gap: 31px; align-items: center; margin-top: 18px; padding: 27px; background: #eee5d1; }
+.engineering-service-strip > div { display: grid; justify-items: start; gap: 11px; }
+.engineering-service-strip svg { color: #0d7c78; }
+.engineering-service-strip h2 { margin: 0; font-size: 30px; line-height: 1.07; }
+.engineering-service-strip p { margin: 0; color: #526468; line-height: 1.61; }
+.engineering-quality-list { margin-top: 18px; border-top: 1px solid #d7d1c4; }
+.engineering-quality-list article { display: grid; grid-template-columns: 48px minmax(180px, .75fr) minmax(0, 1.45fr); gap: 20px; align-items: start; padding: 18px 8px; border-bottom: 1px solid #d7d1c4; }
+.engineering-quality-list h3 { margin: 0; font-size: 23px; line-height: 1.1; }
+.engineering-quality-list p { margin: 0; color: #59686b; font-size: 14px; line-height: 1.55; }
+.engineering-gates { display: grid; grid-template-columns: .85fr 1.25fr auto; gap: 35px; align-items: center; margin-top: 42px; padding: 30px; background: #e4efed; border: 1px solid #c4d6d2; }
+.engineering-gates > div { display: grid; justify-items: start; gap: 11px; }.engineering-gates > div > svg, .engineering-gates > svg { color: #0d7c78; }
+.engineering-gates h2 { margin: 0; font-size: 34px; line-height: 1.05; }.engineering-gates ol { margin: 0; padding-left: 20px; color: #476166; font-size: 14px; line-height: 1.72; }
+@media (max-width: 980px) { .engineering-charter, .engineering-service-strip, .engineering-gates { grid-template-columns: 1fr; }.engineering-charter .status-stamp, .engineering-service-strip .status-stamp { justify-self: start; }.engineering-principles { grid-template-columns: 1fr 1fr; }.engineering-principles article:nth-child(3) { border-left: 0; border-top: 1px solid #d7d1c4; }.engineering-principles article:nth-child(4) { border-top: 1px solid #d7d1c4; }.engineering-contract-note { grid-template-columns: 35px 1fr; }.engineering-contract-note p { grid-column: 2; } }
+@media (max-width: 760px) { .engineering-capability-head { display: none; }.engineering-capability-table article, .engineering-reuse-list article, .engineering-quality-list article { grid-template-columns: 1fr; gap: 8px; }.engineering-test-grid { grid-template-columns: 1fr; }.engineering-test-grid article + article { border-top: 1px solid #d7d1c4; border-left: 0; }.engineering-quality-list article > span { position: absolute; opacity: .55; }.engineering-quality-list h3, .engineering-quality-list p { padding-left: 42px; } }
+@media (max-width: 600px) { .engineering-page { padding-left: 17px; padding-right: 17px; }.engineering-charter, .engineering-contract-note, .engineering-service-strip, .engineering-gates { padding: 23px 20px; }.engineering-charter { grid-template-columns: 1fr; }.engineering-principles { grid-template-columns: 1fr; }.engineering-principles article + article { border-top: 1px solid #d7d1c4; border-left: 0; }.engineering-contract-note { grid-template-columns: 1fr; }.engineering-contract-note p { grid-column: 1; }.engineering-contract-note h2, .engineering-service-strip h2, .engineering-gates h2 { font-size: 29px; } }

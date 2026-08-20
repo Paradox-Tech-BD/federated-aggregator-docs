@@ -26,8 +26,8 @@ export default function ApiReference() {
 
   return (
     <div className="doc-page api-page">
-      <header className="doc-topbar"><p>07 / API REFERENCE</p><StatusStamp status="MOCK MODE" /></header>
-      <section className="page-title api-title"><p className="folio">07.0 / OPENAPI-DRIVEN REFERENCE</p><h1>Test the contract<br /><i>without risking a release.</i></h1><p>Every endpoint is described by a versioned OpenAPI contract. The reference defaults to deterministic mock responses; live requests require an explicit safe environment selection.</p></section>
+      <header className="doc-topbar"><p>08 / API REFERENCE</p><StatusStamp status="MOCK MODE" /></header>
+      <section className="page-title api-title"><p className="folio">08.0 / OPENAPI-DRIVEN REFERENCE</p><h1>Test the contract<br /><i>without risking a release.</i></h1><p>Every endpoint is described by a versioned OpenAPI contract. The reference defaults to deterministic mock responses; live requests require an explicit safe environment selection.</p></section>
 
       <section className="api-safety-banner"><LockKeyhole size={18} /><div><strong>Safe API-calling rules.</strong><span>Mock is the default. Tokens are never persisted. Publish and rollback operations are disabled in public documentation.</span></div></section>
 

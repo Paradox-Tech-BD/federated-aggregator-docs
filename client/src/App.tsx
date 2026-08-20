@@ -6,6 +6,7 @@ import Architecture from "@/pages/Architecture";
 import ApiReference from "@/pages/ApiReference";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
+import Requirements from "@/pages/Requirements";
 import ResearchLog from "@/pages/ResearchLog";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -16,6 +17,7 @@ function Router() {
     <DocsShell>
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/requirements" component={Requirements} />
         <Route path="/architecture" component={Architecture} />
         <Route path="/api" component={ApiReference} />
         <Route path="/research-log" component={ResearchLog} />

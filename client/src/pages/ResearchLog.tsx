@@ -6,6 +6,7 @@ import { ArrowUpRight, CalendarDays, FileWarning, GitCommitHorizontal, Lightbulb
 import { StatusStamp } from "@/components/StatusStamp";
 
 const entries = [
+  { date: "20 AUG 2026", title: "Requirements gate opened before core architecture", status: "PROVISIONAL" as const, icon: FileWarning, body: "The product now has a written non-technical analysis covering stakeholder outcomes, business value, governance, research gaps, risks, and explicit assumptions to accept before backend design." },
   { date: "20 AUG 2026", title: "One product first: aggregation core and admin portal", status: "VALIDATED" as const, icon: Lightbulb, body: "Hospital nodes, hospital portals, and external coordination layers are separated from the first product. The immediate concern is a trustworthy model-release control plane." },
   { date: "20 AUG 2026", title: "Terminology correction: FedProx does not change the server’s basic role", status: "VALIDATED" as const, icon: GitCommitHorizontal, body: "The proximal penalty is applied during local client optimization. The aggregator validates and combines declared client updates, records μ, and publishes the next compatible global model." },
   { date: "19 AUG 2026", title: "Legacy low-specificity / high-sensitivity result is retained as a diagnostic", status: "PROVISIONAL" as const, icon: FileWarning, body: "The pattern is not a thesis claim. It remains a debugging signal pending a corrected aggregation implementation, grouped data split, reproducible configuration, and independent metric recalculation." },

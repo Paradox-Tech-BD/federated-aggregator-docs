@@ -76,3 +76,13 @@
 - [x] Add the Workflow Design chapter, six original Mermaid diagrams, responsive navigation, research sources, and chronology entry.
 - [x] Verify desktop/mobile rendering, type-checking, and Vercel static output without storage-proxy references.
 - [x] Commit, push, and checkpoint the workflow-design documentation update using the user's Git identity.
+
+## Full Aggregator Core System Architecture and Wiring
+
+- [x] Analyze the supplied architecture demo for structural depth and exclude unrelated client, billing, content-generation, and product concerns.
+- [x] Reconcile all current requirements, workflow, data-management, API, and prior core-repository decisions into one explicit architecture boundary.
+- [x] Research authoritative patterns for OIDC/workload identity, NestJS control planes, durable jobs, artifact integrity, Python ML workers, PostgreSQL, Redis, and observability.
+- [x] Define the complete component inventory, trust boundaries, interfaces, service dependencies, data flows, failure paths, and deployment topology.
+- [x] Write original Mermaid system, sequence, deployment, trust-boundary, and event-flow diagrams plus an in-depth implementation specification.
+- [x] Add or expand the responsive documentation chapter and update the Notion/research ledgers.
+- [x] Verify diagrams, mobile layout, TypeScript, Vercel static output, then commit, push, and checkpoint under the user's Git identity.

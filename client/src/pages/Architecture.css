@@ -1,0 +1,73 @@
+/* Research Ledger design for the core wiring chapter: a technical field guide with warm paper, ruled evidence panels, and explicit ownership boundaries. */
+.architecture-page { max-width: 1140px; }
+.architecture-title { max-width: 990px; }
+.architecture-charter { display: grid; grid-template-columns: 62px minmax(0, 1fr) auto; gap: 22px; align-items: start; margin: 3px 0 38px; padding: 27px 29px; background: #e2efed; border-left: 4px solid #0d7c78; }
+.architecture-charter-icon { width: 46px; height: 46px; display: grid; place-items: center; color: #0d6965; border: 1px solid #7eafa9; }
+.architecture-charter span, .architecture-caption span, .architecture-worker-contract span, .architecture-deployment-note span, .architecture-gates > div > span { color: #0d6965; font: 500 10px/1 'IBM Plex Mono', monospace; letter-spacing: .1em; }
+.architecture-charter h2 { max-width: 850px; margin: 11px 0 0; font-size: 31px; line-height: 1.08; }
+.architecture-section { margin-top: 42px; }
+.architecture-section .mermaid-panel { margin-top: 17px; }
+.architecture-boundary-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 18px; border: 1px solid #d7d1c4; background: #fffdf8; }
+.architecture-boundary-grid article { min-height: 204px; padding: 23px; }
+.architecture-boundary-grid article + article { border-left: 1px solid #d7d1c4; }
+.architecture-boundary-grid svg, .architecture-release-grid svg { color: #0d7c78; }
+.architecture-boundary-grid h3, .architecture-release-grid h3 { margin: 16px 0 8px; font-size: 26px; line-height: 1.05; }
+.architecture-boundary-grid p, .architecture-release-grid p { margin: 0; color: #59686b; font-size: 13px; line-height: 1.58; }
+.architecture-component-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 18px; border-top: 1px solid #d7d1c4; border-left: 1px solid #d7d1c4; background: #fffdf8; }
+.architecture-component-grid article { min-height: 205px; padding: 22px; border-right: 1px solid #d7d1c4; border-bottom: 1px solid #d7d1c4; }
+.architecture-component-grid span { color: #0d7c78; font: 500 10px/1 'IBM Plex Mono', monospace; letter-spacing: .08em; }
+.architecture-component-grid h3 { margin: 18px 0 8px; font-size: 26px; line-height: 1.05; }
+.architecture-component-grid p { margin: 0; color: #59686b; font-size: 13px; line-height: 1.56; }
+.architecture-caption { display: grid; grid-template-columns: .72fr 1.5fr; gap: 30px; align-items: center; margin-top: 18px; padding: 25px 27px; background: #22373a; color: #e8f1ee; }
+.architecture-caption > div { display: grid; gap: 11px; }
+.architecture-caption svg { color: #d9bf6d; }
+.architecture-caption span { color: #abcfc9; }
+.architecture-caption strong { color: #fffdf8; font: 400 27px/1.08 'DM Serif Display', Georgia, serif; }
+.architecture-caption p { margin: 0; color: #c1d0cc; line-height: 1.62; }
+.architecture-worker-contract { display: grid; grid-template-columns: .85fr 1.45fr auto; gap: 31px; align-items: center; margin-top: 18px; padding: 28px; color: #edf3f0; background: #223139; }
+.architecture-worker-contract > div:first-child { display: grid; justify-items: start; gap: 12px; }
+.architecture-worker-contract svg { color: #d9bf6d; }
+.architecture-worker-contract span { color: #b0d1cc; }
+.architecture-worker-contract h2 { margin: 0; color: #fffdf8; font-size: 33px; line-height: 1.05; }
+.contract-lanes { display: grid; gap: 9px; }
+.contract-lanes p { margin: 0; padding: 11px 12px; color: #c0d0cd; border: 1px solid #536b6d; font-size: 12px; line-height: 1.54; }
+.contract-lanes b { display: inline-block; min-width: 61px; color: #ddca83; font: 500 9px/1 'IBM Plex Mono', monospace; letter-spacing: .08em; }
+.architecture-state-section .mermaid-panel { background: #fffdf8; }
+.architecture-release-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 18px; }
+.architecture-release-grid article { min-height: 202px; padding: 24px; background: #f1ede3; border-top: 3px solid #8aa9a5; }
+.architecture-deployment-note { display: grid; grid-template-columns: .9fr 1.45fr; gap: 36px; align-items: start; margin-top: 18px; padding: 28px; background: #eee5d1; }
+.architecture-deployment-note h2 { max-width: 360px; margin: 12px 0 0; font-size: 33px; line-height: 1.06; }
+.architecture-deployment-note p { margin: 0; color: #506367; line-height: 1.65; }
+.architecture-fault-table { margin-top: 18px; border-top: 1px solid #d7d1c4; }
+.architecture-fault-table article { display: grid; grid-template-columns: 48px minmax(190px, .72fr) minmax(0, 1.4fr); gap: 20px; align-items: start; padding: 18px 8px; border-bottom: 1px solid #d7d1c4; }
+.architecture-fault-table span { color: #0d7c78; font: 500 10px/1 'IBM Plex Mono', monospace; }
+.architecture-fault-table h3 { margin: 0; font-size: 23px; line-height: 1.1; }
+.architecture-fault-table p { margin: 0; color: #59686b; font-size: 14px; line-height: 1.55; }
+.architecture-gates { display: grid; grid-template-columns: .9fr 1.15fr; gap: 38px; margin-top: 42px; padding: 30px; background: #e4efed; border: 1px solid #c4d6d2; }
+.architecture-gates h2 { max-width: 410px; margin: 13px 0 0; font-size: 35px; line-height: 1.04; }
+.architecture-gates ol { margin: 0; padding-left: 21px; color: #476166; font-size: 14px; line-height: 1.73; }
+
+@media (max-width: 980px) {
+  .architecture-charter, .architecture-worker-contract, .architecture-deployment-note, .architecture-gates { grid-template-columns: 1fr; }
+  .architecture-charter .status-stamp, .architecture-worker-contract .status-stamp { justify-self: start; }
+  .architecture-component-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 760px) {
+  .architecture-boundary-grid { grid-template-columns: 1fr; }
+  .architecture-boundary-grid article + article { border-top: 1px solid #d7d1c4; border-left: 0; }
+  .architecture-release-grid { grid-template-columns: 1fr; gap: 0; border: 1px solid #d7d1c4; }
+  .architecture-release-grid article { min-height: 0; background: #fffdf8; border-top: 0; }
+  .architecture-release-grid article + article { border-top: 1px solid #d7d1c4; }
+  .architecture-fault-table article { grid-template-columns: 38px 1fr; gap: 10px; }
+  .architecture-fault-table p { grid-column: 2; }
+}
+
+@media (max-width: 600px) {
+  .architecture-page { padding-left: 17px; padding-right: 17px; }
+  .architecture-charter { padding: 23px 20px; }
+  .architecture-component-grid { grid-template-columns: 1fr; }
+  .architecture-component-grid article { min-height: 0; }
+  .architecture-caption, .architecture-worker-contract, .architecture-deployment-note, .architecture-gates { padding: 24px 20px; }
+  .architecture-caption strong, .architecture-worker-contract h2, .architecture-deployment-note h2, .architecture-gates h2 { font-size: 29px; }
+}

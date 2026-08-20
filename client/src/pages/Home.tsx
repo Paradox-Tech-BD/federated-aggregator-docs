@@ -9,7 +9,7 @@ import { StatusStamp } from "@/components/StatusStamp";
 const chapters = [
   ["02", "Integrated requirements", "Connected research, stakeholder, governance, workflow, security, data, model, and technical requirements."],
   ["03", "System specification", "Authentication, backend middleware, artifact pipeline, queues, worker contract, and release ledger."],
-  ["04", "Architecture", "Round state machine, artifact flow, validation, and release bundle."],
+  ["04", "Architecture", "Full core wiring: identity, NestJS authority, PostgreSQL/outbox, artifact storage, queues, Python worker, deployment, and recovery."],
   ["05", "Workflow design", "Original Mermaid flows for protocol activation, round orchestration, update validation, aggregation, release approval, and recovery."],
   ["06", "Data management", "Mermaid schema groups, local-data boundary, artifact lineage, retention, and release evidence."],
   ["07", "API reference", "Versioned OpenAPI contract with safe mock/local request tooling."],

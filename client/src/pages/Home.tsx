@@ -8,6 +8,7 @@ import { StatusStamp } from "@/components/StatusStamp";
 
 const chapters = [
   ["02", "Requirements analysis", "Stakeholder outcomes, business value, research gaps, risks, and the next decision gate."],
+  ["03", "Technical design", "Node.js control plane, Python ML worker, persistence, contracts, quality attributes, and reuse decisions."],
   ["03", "Federated-learning concepts", "FedAvg baseline, FedProx client optimization, and the limits of an aggregator claim."],
   ["04", "Architecture", "Round state machine, artifact flow, validation, and release bundle."],
   ["05", "API reference", "Versioned OpenAPI contract with safe mock/local request tooling."],
@@ -49,9 +50,9 @@ export default function Home() {
 
       <section className="reading-grid">
         <div className="chapter-list">
-          <div className="section-heading"><span>DOCUMENT INDEX</span><span>5 STARTING CHAPTERS</span></div>
+          <div className="section-heading"><span>DOCUMENT INDEX</span><span>6 STARTING CHAPTERS</span></div>
           {chapters.map(([index, title, description]) => (
-            <Link href={title === "Requirements analysis" ? "/requirements" : title === "Architecture" ? "/architecture" : title === "API reference" ? "/api" : title === "Research log" ? "/research-log" : "/"} className="chapter-row" key={index}>
+            <Link href={title === "Requirements analysis" ? "/requirements" : title === "Technical design" ? "/technical-requirements" : title === "Architecture" ? "/architecture" : title === "API reference" ? "/api" : title === "Research log" ? "/research-log" : "/"} className="chapter-row" key={index}>
               <span className="chapter-row-index">{index}</span>
               <div><h3>{title}</h3><p>{description}</p></div>
               <ArrowUpRight size={18} />

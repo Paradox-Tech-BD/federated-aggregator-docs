@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
 import Requirements from "@/pages/Requirements";
 import ResearchLog from "@/pages/ResearchLog";
+import TechnicalRequirements from "@/pages/TechnicalRequirements";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -18,6 +19,7 @@ function Router() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/requirements" component={Requirements} />
+        <Route path="/technical-requirements" component={TechnicalRequirements} />
         <Route path="/architecture" component={Architecture} />
         <Route path="/api" component={ApiReference} />
         <Route path="/research-log" component={ResearchLog} />

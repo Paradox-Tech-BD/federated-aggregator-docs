@@ -6,6 +6,7 @@ import { ArrowUpRight, CalendarDays, FileWarning, GitCommitHorizontal, Lightbulb
 import { StatusStamp } from "@/components/StatusStamp";
 
 const entries = [
+  { date: "20 AUG 2026", title: "Technical boundary accepted for review: Node.js control, Python ML", status: "PROVISIONAL" as const, icon: GitCommitHorizontal, body: "The next architecture gate proposes a NestJS modular control plane, PostgreSQL domain state, artifact storage, and a separate PyTorch worker contract. Earlier prototypes are explicitly classified as reuse, rewrite, or defer." },
   { date: "20 AUG 2026", title: "Requirements gate opened before core architecture", status: "PROVISIONAL" as const, icon: FileWarning, body: "The product now has a written non-technical analysis covering stakeholder outcomes, business value, governance, research gaps, risks, and explicit assumptions to accept before backend design." },
   { date: "20 AUG 2026", title: "One product first: aggregation core and admin portal", status: "VALIDATED" as const, icon: Lightbulb, body: "Hospital nodes, hospital portals, and external coordination layers are separated from the first product. The immediate concern is a trustworthy model-release control plane." },
   { date: "20 AUG 2026", title: "Terminology correction: FedProx does not change the server’s basic role", status: "VALIDATED" as const, icon: GitCommitHorizontal, body: "The proximal penalty is applied during local client optimization. The aggregator validates and combines declared client updates, records μ, and publishes the next compatible global model." },

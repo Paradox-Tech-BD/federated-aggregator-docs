@@ -1,44 +1,64 @@
 /**
- * Research Ledger design: the technical chapter treats architecture as a set of durable ownership
- * decisions, making Node.js control and Python ML boundaries clear before code is written.
+ * Research Ledger design: full system specification page, styled like a field manual rather than a dashboard.
+ * It keeps Node.js control responsibilities and Python ML responsibilities visibly separate.
  */
-import { BadgeCheck, Boxes, Braces, Database, LockKeyhole, Network, RefreshCcw, Scale, ServerCog, Sparkles } from "lucide-react";
+import { ArrowRight, BadgeCheck, Boxes, Braces, Database, FileCheck2, LockKeyhole, ServerCog, ShieldCheck, Workflow } from "lucide-react";
 import { StatusStamp } from "@/components/StatusStamp";
 
-const requirements = [
-  ["01", "Control plane", "NestJS + TypeScript owns people, policy, round state, audit, approval, and the public contract."],
-  ["02", "ML worker", "Python + PyTorch owns FedAvg/FedProx execution, numerical checks, evaluation, and model artifacts."],
-  ["03", "Persistence", "PostgreSQL is authoritative for decisions; object storage holds checksum-verified artifacts."],
-  ["04", "Integration", "Versioned commands and results carry identity, correlation, idempotency, deadline, and schema version."],
+const stack = [
+  ["AUTH", "OIDC provider", "JWT issuer only; the core backend owns membership, roles, and federation scope."],
+  ["BACKEND", "NestJS / Node.js", "Policy, round lifecycle, release governance, audit, OpenAPI, and administration."],
+  ["DATABASE", "PostgreSQL", "Authoritative state, protocol records, model lineage, ledger events, and idempotency."],
+  ["ARTIFACTS", "S3-compatible storage", "Digest-verified model, metrics, manifest, and release-package objects."],
+  ["CONTROL JOBS", "BullMQ + Redis", "Verification, dispatch, release publication, audit export, retries, and outbox work."],
+  ["ML WORKER", "Python / PyTorch", "Tensor checks, FedAvg/FedProx-compatible aggregation, candidate evaluation, artifacts."],
 ];
 
-const reuse = [
-  ["Express state machine", "REWRITE", "Keep transition concepts and tests; replace the in-memory, unauthenticated runtime."],
-  ["Coordination adapter", "ADAPT", "Keep its checksum/model-version interface; replace in-memory storage with registry, approval, and rollback records."],
-  ["Python FL core", "REUSE + EXTEND", "Keep tested FedAvg/FedProx primitives; add artifact I/O, declared BatchNorm policy, and worker envelopes."],
-  ["Two-site experiment", "REUSE AS FIXTURE", "Software verification only—not a breast-cancer result or clinical claim."],
-  ["Hospital/admin products", "DEFER", "Separate repositories after their own requirements gates are accepted."],
+const middleware = [
+  ["01", "Request context", "Correlation ID, request metadata, and malformed-header rejection."],
+  ["02", "Credential verification", "Human OIDC JWT or separate workload credential; never one shared administrator token."],
+  ["03", "Hydration", "Load membership, site/workload status, role, and permitted federation scope from PostgreSQL."],
+  ["04", "Policy + idempotency", "Deny cross-site actions by default; writes cannot repeat side effects."],
+  ["05", "Rate + audit", "Constrain payload and request rates, then record actor, action, object, and correlation."],
+];
+
+const queues = [
+  ["artifact-verify", "New manifest", "Object integrity and ML compatibility", "accepted / quarantined"],
+  ["aggregate", "Threshold or deadline", "Dispatch immutable Python aggregation command", "candidate / failed"],
+  ["evaluate", "Candidate created", "Run declared reference or candidate evaluation", "evidence bundle"],
+  ["release-publish", "Human approval", "Assemble immutable release package and ledger event", "published / failed"],
+];
+
+const tables = [
+  ["memberships", "user, organization, role, status", "Policy is owned by the core, not the identity provider."],
+  ["protocol_versions", "architecture, algorithm, config, criteria", "Immutable scientific/operational method record."],
+  ["rounds", "protocol, base model, state, threshold, deadline", "Controlled federation lifecycle."],
+  ["update_submissions", "manifest, artifact, status, reason", "Every update has an acceptance or quarantine explanation."],
+  ["aggregation_jobs", "command, result, status, attempts", "Durable Node ↔ Python execution handoff."],
+  ["model_release_events", "candidate, approval, publish, rollback", "Append-only model lifecycle ledger."],
 ];
 
 export default function TechnicalRequirements() {
   return (
-    <div className="doc-page tech-page">
-      <header className="doc-topbar"><p>03 / TECHNICAL REQUIREMENTS</p><StatusStamp status="PROVISIONAL" /></header>
-      <section className="page-title"><p className="folio">03.0 / OWNERSHIP BEFORE IMPLEMENTATION</p><h1>One control plane.<br /><i>One ML worker plane.</i></h1><p>The system is deliberately split by responsibility: Node.js governs the federation, while Python executes the declared machine-learning work. Neither layer may silently own the other’s decisions.</p></section>
+    <div className="doc-page specification-page">
+      <header className="doc-topbar"><p>02 / SYSTEM SPECIFICATION</p><StatusStamp status="PROVISIONAL" /></header>
+      <section className="page-title"><p className="folio">02.0 / CORE AGGREGATOR REQUIREMENTS</p><h1>Own the policy.<br /><i>Isolate the math.</i></h1><p>A full requirements specification for the first core product: a Node.js control plane that governs federation decisions and a Python worker plane that performs declared model aggregation.</p></section>
 
-      <section className="plane-diagram"><div className="plane control"><div className="plane-icon"><ServerCog size={21} /></div><span>NODE.JS / TYPESCRIPT</span><h2>Control plane</h2><p>Identity · protocol · round state · manifests · audit · approval · administration</p></div><div className="plane-link"><Network size={21} /><span>versioned command / result</span></div><div className="plane worker"><div className="plane-icon"><Sparkles size={21} /></div><span>PYTHON / PYTORCH</span><h2>ML worker plane</h2><p>FedAvg/FedProx · tensor checks · evaluation · checkpoints · model metadata</p></div></section>
+      <section className="spec-intent"><div><ServerCog size={22} /><span>CORE CONTRACT</span></div><h2>The core accepts verifiable update manifests, coordinates compatible aggregation work, and releases approved models. It never collects raw hospital images or local training data.</h2><StatusStamp status="VALIDATED" /></section>
 
-      <section className="requirements-section"><div className="section-heading"><span>TECHNICAL OUTCOMES</span><span>PHASE-1 FOUNDATION</span></div><div className="technical-requirements-grid">{requirements.map(([index, title, text]) => <article key={index}><span>{index}</span><h3>{title}</h3><p>{text}</p></article>)}</div></section>
+      <section className="spec-section"><div className="section-heading"><span>TECHNOLOGY STACK</span><span>PROPOSED FOR APPROVAL</span></div><div className="stack-grid">{stack.map(([tag, title, detail]) => <article key={tag}><span>{tag}</span><h3>{title}</h3><p>{detail}</p></article>)}</div></section>
 
-      <section className="tech-two-column"><article className="control-details"><div className="panel-kicker"><Braces size={16} /> NODE.JS CONTROL PLANE</div><h2>The round lifecycle is a policy decision, not a worker side effect.</h2><p>The Node.js runtime issues immutable aggregation commands after compatible submissions are recorded. It remains authoritative for protocol version, participant eligibility, validation/quarantine, release approval, and audit events.</p><div className="tech-tags"><span>OpenAPI v1</span><span>OIDC identities</span><span>RBAC + scope</span><span>Idempotency</span><span>Audit ledger</span></div></article><article className="worker-details"><div className="panel-kicker"><Boxes size={16} /> PYTHON ML WORKER</div><h2>FedProx belongs in local optimization.</h2><p>The worker receives a declared job and emits a verified result. It does not create users, set release state, or write directly to the control-plane database. A future Flower adapter remains an ML integration option—not an operating-governance system.</p><div className="tech-tags"><span>PyTorch</span><span>FedAvg</span><span>FedProx</span><span>Numerical checks</span><span>Artifact manifest</span></div></article></section>
+      <section className="spec-section"><div className="section-heading"><span>01 / AUTHENTICATION AND SESSION ARCHITECTURE</span><span>HUMANS ≠ WORKLOADS</span></div><div className="auth-spec"><article><LockKeyhole size={19} /><h2>Human requests</h2><p>An OIDC provider issues a signed JWT after login. NestJS verifies it, then hydrates the caller’s own federation membership and role from PostgreSQL. The browser never decides permissions.</p></article><article><Boxes size={19} /><h2>Hospital and ML-worker requests</h2><p>Workloads use separate short-lived machine credentials. A hospital site workload or Python worker cannot act through an administrator’s browser session, and no raw clinical data enters the core API.</p></article></div><div className="middleware-list">{middleware.map(([index, title, text]) => <article key={index}><span>{index}</span><div><h3>{title}</h3><p>{text}</p></div></article>)}</div></section>
 
-      <section className="persistence-strip"><div><Database size={22} /><h2>PostgreSQL owns decisions.<br />Object storage owns artifacts.</h2></div><p>Domain records, approvals, and audit events stay transactional. Checkpoints and evidence bundles are stored separately with digest, producer version, provenance, and retention details. A URI never proves integrity by itself.</p><StatusStamp status="VALIDATED" /></section>
+      <section className="spec-section"><div className="section-heading"><span>02 / BACKEND ROUTE RESPONSIBILITIES</span><span>MODULAR NESTJS MONOLITH</span></div><div className="route-grid"><article><code>/federations · /participants · /protocols</code><p>Identity, federation membership, protocol version, architecture declaration, algorithm parameters, release criteria.</p></article><article><code>/rounds · /submissions · /aggregation-jobs</code><p>Round state, signed artifact-upload intent, manifest intake, validation records, dispatch and recovery.</p></article><article><code>/model-versions · /releases · /audit</code><p>Candidate lineage, human approval, publication/rollback events, scoped audit and evidence exports.</p></article></div></section>
 
-      <section className="requirements-section"><div className="section-heading"><span>REUSE / REWRITE / DEFER</span><span>EARLIER CLEAN-ROOM WORK</span></div><div className="reuse-table">{reuse.map(([component, decision, rationale]) => <article key={component}><h3>{component}</h3><span className={`reuse-decision ${decision.toLowerCase().replaceAll(" ", "-").replace("+", "")}`}>{decision}</span><p>{rationale}</p></article>)}</div></section>
+      <section className="spec-section"><div className="section-heading"><span>03 / UPDATE INTAKE AND FEDERATED ROUND</span><span>MANIFEST-FIRST, NOT RAW-DATA INTAKE</span></div><div className="round-flow"><div><b>1</b><h3>Request intent</h3><p>Active site asks for a short-lived upload target for one round/protocol.</p></div><ArrowRight /><div><b>2</b><h3>Upload artifact</h3><p>Weights and metrics go directly to object storage; the API receives no raw images.</p></div><ArrowRight /><div><b>3</b><h3>Submit manifest</h3><p>Digest, base model, sample count, local metadata, and declared FedProx settings arrive.</p></div><ArrowRight /><div><b>4</b><h3>Validate + aggregate</h3><p>Node verifies governance; Python verifies tensors and produces a candidate only from accepted updates.</p></div><ArrowRight /><div><b>5</b><h3>Approve release</h3><p>A human publishes, rejects, deprecates, or rolls back through the append-only ledger.</p></div></div></section>
 
-      <section className="quality-grid"><article><BadgeCheck size={19} /><h3>Correctness</h3><p>Only compatible, finite, checksum-verified artifacts are eligible for aggregation.</p></article><article><LockKeyhole size={19} /><h3>Privacy boundary</h3><p>The core never persists raw images, local datasets, or patient identifiers.</p></article><article><RefreshCcw size={19} /><h3>Recovery</h3><p>A timeout or worker restart cannot publish a model or silently advance a round.</p></article><article><Scale size={19} /><h3>Reproducibility</h3><p>Every candidate links code revision, protocol, artifacts, environment, and seed.</p></article></section>
+      <section className="spec-section spec-columns"><article><div className="section-heading"><span>04 / JOB QUEUE</span><span>BULLMQ + REDIS</span></div><div className="queue-table">{queues.map(([name, trigger, work, result]) => <div key={name}><code>aggregator:{name}</code><p><b>Trigger:</b> {trigger}</p><p><b>Work:</b> {work}</p><span>{result}</span></div>)}</div></article><article className="worker-contract"><div className="section-heading"><span>05 / PYTHON WORKER</span><span>AUTHENTICATED JOB CONTRACT</span></div><h2>FedProx is local optimization—not server-side averaging.</h2><p>The central worker receives an immutable aggregation command: verified update descriptors, protocol version, base-model lineage, aggregation policy, correlation ID, and deadline. It returns one signed result or explicit failure callback; it never writes business state to PostgreSQL.</p><div className="contract-lines"><span>AggregationJob → schema version + inputs + policy + deadline</span><span>JobResult → candidate digest + validation summary + evidence + warnings</span></div></article></section>
 
-      <section className="tech-gate"><div><span>ARCHITECTURE GATE 2</span><h2>Confirm the foundations before backend implementation.</h2></div><ol><li>NestJS + TypeScript for control; PyTorch + Python for workers.</li><li>Modular monolith first; no early control-plane microservices.</li><li>PostgreSQL + S3-compatible artifacts.</li><li>OIDC for humans; distinct workload credentials.</li><li>HTTP + versioned schemas first; message broker only when measured.</li><li>BatchNorm strategy is tested on the vision model before real experiments.</li></ol></section>
+      <section className="spec-section"><div className="section-heading"><span>06 / POSTGRESQL AND RELEASE LEDGER</span><span>THE DECISION SYSTEM OF RECORD</span></div><div className="schema-table">{tables.map(([name, fields, meaning]) => <article key={name}><code>{name}</code><p>{fields}</p><span>{meaning}</span></article>)}</div></section>
+
+      <section className="spec-check"><div><FileCheck2 size={20} /><span>WHAT IMPROVES ON EARLIER WORK</span><h2>Keep the tested FedProx core.<br />Replace prototype control logic.</h2></div><ul><li><b>Reuse:</b> Python finite-state/tensor validation and FedAvg/FedProx reference tests.</li><li><b>Rebuild:</b> In-memory Express round logic as persistent NestJS modules with authorization, audit, object storage, and domain transactions.</li><li><b>Defer:</b> Hospital portals, blockchain/IPFS enforcement, and independent microservices until the controlled core workflow proves the need.</li></ul></section>
     </div>
   );
 }

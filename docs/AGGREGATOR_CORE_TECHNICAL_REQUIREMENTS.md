@@ -1,136 +1,222 @@
-# Aggregator Core: Technical Requirements Analysis
+# Full Aggregator Core System Requirements Analysis
 
-**Status:** Draft for architecture gate 2.  
-**Product scope:** Central federated-learning aggregator and administrator/research portal.  
-**Preferred implementation split:** Node.js/TypeScript control plane; Python machine-learning worker plane.
+**Status:** Proposed architecture specification.  
+**Product:** Federated Aggregator Core and future administrator portal.  
+**Primary purpose:** Accept verified hospital model-update manifests, coordinate FedAvg/FedProx-compatible aggregation work, and publish governed model releases without collecting raw patient images or local training datasets.
 
-## Technical position
+## Technology stack — proposed for approval
 
-The product should use a **modular Node.js/TypeScript control plane** for identities, authorization, protocol definitions, round lifecycle, update intake, validation records, audit, release approval, API contracts, and administration. A separate **Python ML worker plane** should own model loading, local-training simulation, FedAvg/FedProx execution, tensor validation, evaluation, checkpoint generation, and ML-specific metadata.
+| Layer | Proposed choice | Responsibility |
+|---|---|---|
+| Human authentication | OIDC-compatible provider; Keycloak is the self-hosted default | Sign-in and JWT issuance only |
+| Core backend | NestJS + Node.js + TypeScript | Business logic, federation policy, authorization, round state, audit, release governance |
+| Database | PostgreSQL | Authoritative domain state, audit events, model/version lineage, protocol records |
+| Artifact storage | S3-compatible object storage; MinIO locally | Model weights, metrics bundles, manifests, release packages |
+| Async control jobs | BullMQ + Redis | Retries, dispatch, artifact verification, release publication, notification/outbox work |
+| ML execution | Python + PyTorch + FastAPI worker boundary | Tensor validation, aggregation, candidate evaluation, FedAvg/FedProx reference logic |
+| Future FL framework adapter | Flower, after baseline contracts pass | Standardized Python FL strategy/client integration; not governance or registry replacement [1] |
+| API contract and reference | OpenAPI 3.1 + Scalar | Versioned backend contract and safe mock/local interactive reference |
+| Future administrator client | Separate React/TypeScript portal | Human administration only; it never bypasses backend authorization |
 
-This is a boundary of responsibility, not an excuse for immediate microservice sprawl. The initial runtime should be a modular NestJS application with a separately deployable Python worker. NestJS supports both request-response and event-based communication over interchangeable transports, while Flower is designed to bring existing Python ML workloads into federated settings using strategy abstractions.[1] [2] The system should therefore start with explicit contracts and only introduce transport complexity when the controlled multi-worker workflow proves it necessary.
+The Node.js backend is the **single source of truth** for who may do what, which federation protocol is active, whether a submission is valid, and whether a candidate model may be released. The Python worker is a controlled calculation service: it can create an aggregation result, but it cannot create users, approve releases, or mutate PostgreSQL directly.
 
-> The control plane decides **whether** an aggregation may occur. The Python worker decides **how** compatible tensors are aggregated under the declared algorithm.
+## 1. Authentication, workload identity, and session architecture
 
-## Reference architecture
+Human users authenticate through an OIDC-compatible identity provider. The provider issues a signed JWT; it does not own federation roles, organization membership, release permissions, or model data. Each portal/API request presents the JWT as a Bearer token. The NestJS backend verifies the signature with the provider’s public keys, extracts the stable subject identifier, then hydrates the user’s permitted federation and role from PostgreSQL.
 
-| Plane | Technology direction | Owns | Must not own |
+Hospital workloads and the Python ML worker are not human users. They use distinct short-lived workload credentials—initially signed client credentials over mTLS or a private-network token exchange. A human administrator’s browser session must never be repurposed as a hospital-node or worker credential.
+
+Every externally reachable request follows this middleware chain.
+
+| Step | Middleware | Required behavior |
+|---|---|---|
+| 1 | Request context | Generate/accept a correlation ID, record request metadata, and reject malformed headers |
+| 2 | Credential verification | Verify OIDC JWT for a human or workload credential for a machine; attach principal type and stable subject |
+| 3 | User/workload hydration | Look up organization, federation membership, role, workload status, and revocation state from PostgreSQL |
+| 4 | Scope and policy guard | Verify the action, federation, round, and organization scope; deny cross-site access by default |
+| 5 | Idempotency guard | For write operations, replay a prior successful result when the same idempotency key is reused |
+| 6 | Rate and payload guard | Limit requests by principal and route; reject oversized/unsupported bodies before business logic |
+| 7 | Audit context | Attach principal, correlation ID, request ID, and authorization decision to the domain action |
+
+Role enforcement lives in PostgreSQL-backed policy, not in frontend visibility or identity-provider custom claims. Initial roles are `platform_admin`, `research_admin`, `site_admin`, `site_workload`, `auditor`, and `research_reader`. Every role is constrained by organization and federation scope.
+
+## 2. NestJS backend structure
+
+The backend begins as a **modular monolith**. Modules are separate by domain and test boundary, but are deployed together until the system demonstrates a measured need for distributed control-plane services. NestJS can support request-response and event-style service communication later without forcing an early microservice split.[2]
+
+### Route groups
+
+| Route group | Purpose | Primary principals |
+|---|---|---|
+| `/api/v1/session` | Return the hydrated caller profile and permitted scopes | Any authenticated principal |
+| `/api/v1/federations` | Create/read federation configuration and organization membership | Platform/research administrators |
+| `/api/v1/protocols` | Version architecture, preprocessing, optimizer, FedProx `mu`, metric schema, and release criteria | Research administrators |
+| `/api/v1/participants` | Register, activate, pause, withdraw, or suspend a site workload | Research/site administrators |
+| `/api/v1/rounds` | Create, open, close, cancel, and inspect federated rounds | Research administrators; scoped readers |
+| `/api/v1/rounds/{roundId}/submissions` | Allocate upload intent, receive update manifests, display validation outcome | Site workloads; scoped administrators |
+| `/api/v1/aggregation-jobs` | Inspect and control queued/running/recovered aggregation work | Research administrators; internal worker callback |
+| `/api/v1/model-versions` | Inspect candidates, lineage, artifact manifests, and evaluation evidence | Scoped readers and administrators |
+| `/api/v1/releases` | Approve, publish, deprecate, or roll back model releases | Authorized release approvers only |
+| `/api/v1/audit` | Filter/export durable domain events | Auditors and authorized administrators |
+| `/api/v1/admin` | Internal operational controls, policy configuration, and incident actions | Platform administrators only |
+
+## 3. Model-update intake and artifact pipeline
+
+A hospital does **not** send raw images, patient identifiers, local datasets, or an unverified weight file through the public API. It first requests an upload intent for the round’s permitted architecture and protocol. The backend verifies that the caller is an active workload participant for that exact federation and round, then returns a short-lived, scope-limited object-storage upload path.
+
+The hospital uploads its model-update artifact directly to object storage and submits a small JSON manifest to the backend. The manifest includes the round/protocol/architecture IDs, global-model base version, sample count, local training metadata, SHA-256 digest, storage key, metrics bundle reference, and declared FedProx configuration. The server validates schema, participant eligibility, deadline, idempotency, digest format, base-model lineage, and duplicate submission rules. It records a **pending validation** submission; it does not immediately claim that the update is accepted.
+
+BullMQ then dispatches artifact verification. A Node-side verifier confirms storage existence, size, digest, and immutable storage metadata. The Python worker performs ML-specific compatibility checks—state-dict keys, shapes, dtypes, finite tensors, and protocol/architecture compatibility. A failing submission enters `quarantined` with a durable reason code. A passing submission becomes `accepted` and is eligible for the aggregation threshold.
+
+## 4. Federated round and model-release lifecycle
+
+The round workflow is intentionally explicit:
+
+1. A research administrator creates an immutable protocol version and a draft round linked to an approved global base model.
+2. The round is opened only after the chosen participants, deadline, threshold, and release criteria are visible.
+3. A hospital retrieves the permitted base model and trains locally. In FedProx, the hospital-side training loss includes the proximal term against that received global state; the central aggregator does not “apply FedProx” merely by averaging weights.[3]
+4. The hospital uploads its update artifact and submits the signed manifest.
+5. The backend and ML worker validate the update, record acceptance/quarantine evidence, and prevent duplicates.
+6. When the round reaches its declared threshold or deadline, the backend creates one immutable aggregation job.
+7. The Python worker aggregates only the accepted, compatible updates, creates a candidate artifact, and returns a result bundle.
+8. The backend creates a candidate model version, links every accepted/excluded submission, and requires evaluation evidence and human approval.
+9. An authorized approver publishes a release bundle or rejects/deprecates the candidate. Publication is reversible through a later rollback event, never by overwriting history.
+
+## 5. BullMQ job queue — detailed design
+
+BullMQ runs on Redis and is used by the **Node.js control plane** for durable control tasks. Python does not need to be a direct BullMQ consumer. A Node dispatcher invokes the Python worker over the authenticated internal contract and converts the worker’s callback into durable domain events. This avoids requiring a Python reimplementation of BullMQ semantics in the first release.
+
+| Queue | Trigger | Worker behavior | Result |
 |---|---|---|---|
-| Control plane | Node.js, TypeScript, NestJS, OpenAPI | Human and workload identity, role checks, round state, protocol, manifest validation, audit, release approval, database transactions, admin API | PyTorch tensors, optimizer state, client-side FedProx loss, clinical inference |
-| ML worker plane | Python, PyTorch, FastAPI/gRPC boundary, optional Flower strategy adapter | Training/evaluation jobs, algorithm execution, numerical validation, artifact creation, model metadata extraction, metrics computation | User accounts, role policy, release approval, business-state mutation |
-| Persistence plane | PostgreSQL plus object storage | Transactional domain records, append-only audit, immutable artifact references, migration history | Raw hospital images or training datasets |
-| Integration plane | OpenAPI for synchronous requests; versioned event envelopes for long-running work | Command acceptance, job progress, result reporting, correlation, retries, idempotency | Undocumented direct database writes between services |
-| Documentation plane | Static documentation, OpenAPI reference, decision ledger | Contracts, operating model, evidence status, research log, architecture decisions | Live production administration by default |
+| `aggregator:artifact-verify` | New update manifest | Verify object presence, size, checksum, immutable metadata; request ML compatibility check | Submission accepted or quarantined |
+| `aggregator:aggregate` | Round threshold/deadline met | Dispatch versioned aggregation command to Python; monitor callback/timeout | Candidate artifact or explicit failure |
+| `aggregator:evaluate` | Candidate created | Dispatch configured reference/candidate evaluation job | Metrics/evidence bundle linked to candidate |
+| `aggregator:release-publish` | Human approval recorded | Assemble immutable release package, mark release visible, write audit/outbox event | Published or failed release state |
+| `aggregator:outbox` | Domain transaction emits event | Deliver future notification/webhook/analytics actions without coupling them to request handling | Delivered/retried/dead-lettered event |
+| `aggregator:audit-export` | Authorized export request | Produce a scoped, redacted audit export asynchronously | Downloadable evidence package |
 
-## Required components
+Each job follows `queued → running → succeeded | retrying | failed | cancelled`. Jobs retry at most three times with exponential backoff only when their failure is classified as transient. Terminal failures do not silently advance round or release state. The original aggregation command and the worker result are persisted, including correlation ID, idempotency key, code revision, input artifact IDs, environment, and timestamps.
 
-### A. Node.js/TypeScript control plane
+## 6. Python ML worker and FedProx contract
 
-The first runtime repository should be **`paradox-tech-bd/federated-aggregator-core`**. It should use NestJS as a modular monolith, not a collection of separately deployed Node services. The control plane must expose a versioned REST API with an OpenAPI document generated and checked in CI. The documentation product consumes the checked-in OpenAPI contract, while the runtime treats the same contract as a release artifact.
+The Python worker is a separate service/package. It accepts a versioned `AggregationJob` command and returns a `JobResult` callback. The first transport is authenticated HTTPS; OpenAPI/JSON Schema describes both directions. The later decision to introduce NATS JetStream must be based on measured worker concurrency, recovery, and delivery requirements rather than architecture fashion.
 
-The control plane must provide the following logical modules.
+### `AggregationJob` minimum fields
 
-| Module | Required responsibility | Phase-1 decision |
-|---|---|---|
-| Identity and access | Authenticate users and workload clients; enforce role and site scope | Use external OIDC-compatible identity provider for humans; workload credentials are distinct from human sessions |
-| Federation registry | Register institutions, participants, allowed architectures, and status | Keep a participant lifecycle with active, paused, withdrawn, and suspended states |
-| Protocol registry | Version declared algorithm, model architecture, preprocessing, metric schema, privacy options, and release criteria | A round references an immutable protocol version; it cannot silently change mid-round |
-| Round orchestration | Create, open, close, cancel, and recover rounds | Existing state-machine concept is reusable, but persistence and authorization must be rewritten |
-| Update intake | Accept only manifests and artifact references, then create a validation record | Never proxy or persist raw images; use signed artifact upload paths rather than loading weights through the API server |
-| Validation and quarantine | Record compatibility, integrity, duplicate, deadline, and policy decisions | Quarantine is a first-class state with a reason and resolution path |
-| Job orchestration | Request a Python ML job and track execution | The control plane generates an immutable command; worker result is validated before domain state changes |
-| Model registry and release | Maintain candidate/release lineage, approval, publication, deprecation, and rollback | Publishing requires a human approval record and a release bundle |
-| Audit and evidence | Persist actor, timestamp, request/correlation ID, decision, reason, and object version | Domain audit is append-only; application logs do not substitute for it |
-| Administration API | Support the future portal and integration scripts | API authorization is policy-based, not merely hidden UI controls |
-
-### B. Python ML worker plane
-
-The worker plane should begin as a dedicated Python package and service, **`federated-ml-worker`**, within the core program. It should use PyTorch and preserve the existing clean-room `federated_core.py` as a reference-tested library. The worker can add a Flower strategy adapter after the first end-to-end simulations pass, but Flower must not be treated as the system’s governance or model-registry layer.[2]
-
-The worker must accept only a declared `AggregationJob` command with a protocol ID, verified artifact descriptors, architecture ID, algorithm configuration, and correlation ID. It must return a deterministic `AggregationResult` or `JobFailure` event. It must not write directly into the control-plane database.
-
-FedProx is specifically a **local-training behavior**: the client worker computes the proximal term against the received global state. The aggregation worker receives compatible update artifacts and performs server-side sample-weighted aggregation according to the declared policy. The runtime must record `mu`, local epochs, optimizer configuration, base model version, and update schema in every manifest; it cannot infer FedProx merely from a server-side averaging call.[3]
-
-### C. PostgreSQL and object storage
-
-PostgreSQL should be the authoritative store for domain state. It should contain users/references, roles, sites, participants, protocol versions, rounds, submissions, validation outcomes, aggregation jobs, model versions, releases, approvals, audit events, and outbox events. The first version should choose a migration-first TypeScript ORM/query layer—**Drizzle ORM is preferred for explicit SQL and transparent migrations**—but domain logic must not be hidden inside ORM hooks.
-
-Large model checkpoints, metrics bundles, and release packages belong in S3-compatible object storage. MinIO is appropriate for local development; a managed S3-compatible service can be selected later. Every artifact record must include content type, size, SHA-256, producer version, storage key, provenance, and retention policy. A URI alone is not evidence of integrity.
-
-### D. Inter-service contract
-
-The first integration is intentionally simple: the NestJS control plane sends an authenticated command to the Python worker over HTTPS in local development, then receives a signed result callback. The command and callback payloads are versioned JSON schemas. This establishes testable ownership without prematurely operating a message broker.
-
-For multi-worker or long-running production operations, evolve the same contract to event delivery through **NATS JetStream** with an outbox relay. The choice is deferred until phase-1 load and recovery requirements are measured. No workflow may depend on an in-memory queue or process-local map after the first persistent slice.
-
-| Contract property | Requirement |
+| Field | Meaning |
 |---|---|
-| Versioning | Every command/event has `schema_version`, `event_type`, and compatibility policy |
-| Identity | Sender and receiver have distinct workload identities; no shared administrator token |
-| Correlation | Every request, job, artifact, audit record, and callback carries a correlation ID |
-| Idempotency | Intake, job dispatch, and release publication accept idempotency keys and prevent duplicate side effects |
-| Immutability | Submitted manifests and completed worker results are immutable; corrections are new versions/events |
-| Time boundaries | Commands include issued-at, expiry, deadline, and round/protocol version constraints |
-| Failure behavior | Worker failures are explicit results; timeouts do not silently advance round state |
+| `job_id`, `correlation_id`, `schema_version` | Stable identity and contract version |
+| `federation_id`, `round_id`, `protocol_version` | Governance scope and immutable method reference |
+| `algorithm` | `fedavg` or `fedprox-compatible`; FedProx client settings are recorded, not recomputed centrally |
+| `base_model` | Verified model-version ID and artifact descriptor |
+| `accepted_updates` | Ordered, verified artifact descriptors with sample counts and metadata |
+| `aggregation_policy` | Floating-tensor weighting, integer-buffer rule, BatchNorm policy, threshold settings |
+| `environment` | Python/PyTorch/worker version, hardware class, deterministic-seed policy |
+| `deadline` | No late result may mutate the round after this boundary without manual recovery |
 
-## Technical requirements by quality attribute
+### `JobResult` minimum fields
 
-| Quality attribute | Requirement | Verification evidence |
+The result includes status, model/candidate artifact descriptor, checksum, validation summary, accepted/excluded update IDs, aggregation metrics, environment manifest, warnings, and failure reason when applicable. The control plane validates that it is the expected result for the expected job before it creates or updates any candidate model version.
+
+The existing clean-room Python `federated_core.py` is reused as a tested reference library because it already validates state-dict compatibility, finite values, sample-weighted floating tensors, integer-buffer handling, and the local FedProx penalty. It must be extended with artifact I/O, a tested BatchNorm policy for the actual vision architecture, structured worker results, device control, and reproducibility manifest generation.
+
+## 7. Model registry, release ledger, and audit trail
+
+The core uses append-only events for all consequential model-status changes. A release is a **new immutable event**, never a mutable flag that removes the prior state. The current view can be materialized for fast reads, but the ledger remains the source of truth.
+
+| Table | Key fields | Purpose |
 |---|---|---|
-| Correctness | Only compatible, finite, checksum-verified artifacts reach aggregation | Unit tests, contract tests, adversarial manifest fixtures, worker validation reports |
-| Determinism | Same declared inputs and fixed seed produce the same reference output where algorithmically feasible | Re-run comparison, artifact digest, environment manifest |
-| Security | Role/scope checks, short-lived sessions, workload separation, signed artifact access, redacted logs | Threat-model review, negative authorization tests, secret scan |
-| Privacy boundary | Control plane never stores raw images, patient identifiers, or local training datasets | Schema checks, integration tests, storage policy, audit samples |
-| Availability and recovery | A worker failure or restart cannot create a false release or lose a state transition | Transaction/outbox tests, retry and cancellation tests, recovery rehearsal |
-| Auditability | Every consequential decision can be reconstructed from durable records | Exportable audit trace for a test round |
-| Observability | Human-readable dashboard plus correlation-linked metrics, structured logs, and traces | Controlled failure scenario with an operator recovery runbook |
-| Maintainability | Public contracts, domain modules, migrations, typed clients, and test fixtures are versioned | CI contract checks, architecture decision records, code ownership review |
-| Reproducibility | Each result links code revision, protocol, artifact inputs, environment, and seed | Evidence package attached to every candidate/release |
+| `model_versions` | ID, base version, round ID, protocol ID, artifact ID, state, created timestamp | Materialized current candidate/release view |
+| `model_release_events` | ID, model version ID, event type, actor, reason, evidence IDs, timestamp | Append-only lifecycle: `candidate_created`, `approved`, `published`, `deprecated`, `rolled_back` |
+| `audit_events` | ID, actor, action, target type/ID, correlation ID, payload summary, timestamp | Cross-domain human and workload accountability |
+| `artifacts` | ID, storage key, SHA-256, size, content type, producer version, retention policy | Verifiable object-storage metadata |
+| `outbox_events` | ID, event type, aggregate ID, payload, delivery status, timestamp | Transactional hand-off to async work and future integrations |
 
-## API and data requirements
+## 8. PostgreSQL schema — key tables
 
-The external API should use resource-oriented, versioned paths. Examples include `POST /api/v1/protocols`, `POST /api/v1/rounds`, `POST /api/v1/rounds/{id}/submissions`, `GET /api/v1/rounds/{id}`, `POST /api/v1/aggregation-jobs/{id}/result`, and `POST /api/v1/releases/{id}/approve`. The API must use pagination, stable error envelopes, request IDs, idempotency keys for writes, and machine-readable reason codes.
+| Table | Essential fields |
+|---|---|
+| `users` | `id`, `oidc_subject`, `email`, `display_name`, `status`, `created_at` |
+| `organizations` | `id`, `name`, `status`, `created_at` |
+| `memberships` | `user_id`, `organization_id`, `role`, `status`, `created_at` |
+| `workloads` | `id`, `organization_id`, `credential_subject`, `kind`, `status`, `last_seen_at` |
+| `federations` | `id`, `name`, `owner_organization_id`, `status`, `created_at` |
+| `federation_participants` | `federation_id`, `organization_id`, `workload_id`, `status`, `joined_at`, `withdrawn_at` |
+| `protocol_versions` | `id`, `federation_id`, `version`, `architecture_id`, `algorithm`, `config_json`, `release_criteria_json`, `created_by` |
+| `rounds` | `id`, `federation_id`, `protocol_version_id`, `base_model_version_id`, `state`, `threshold`, `deadline`, `created_by` |
+| `update_submissions` | `id`, `round_id`, `workload_id`, `artifact_id`, `manifest_json`, `status`, `reason_code`, `submitted_at` |
+| `aggregation_jobs` | `id`, `round_id`, `command_json`, `status`, `worker_job_id`, `result_artifact_id`, `attempts`, `correlation_id` |
+| `model_versions` | `id`, `round_id`, `base_model_version_id`, `artifact_id`, `state`, `created_at` |
+| `model_release_events` | `id`, `model_version_id`, `event_type`, `actor_id`, `reason`, `evidence_json`, `created_at` |
+| `api_idempotency` | `principal_id`, `route`, `key`, `request_hash`, `response_json`, `expires_at` |
+| `audit_events` | `id`, `actor_type`, `actor_id`, `action`, `target_type`, `target_id`, `correlation_id`, `payload_summary`, `created_at` |
 
-The following identity and authorization roles are required at minimum: **platform administrator**, **research administrator**, **site administrator**, **site workload**, **auditor**, and **read-only researcher**. A user’s role is insufficient without scope: a site administrator must not control another site’s submission or view sensitive operational details that are not part of the agreed federation view. Standard authentication and REST-security guidance should shape session, token, rate-limit, and API error requirements.[4] [5] [6]
+## 9. System architecture
 
-## Build, reuse, and defer assessment
+```mermaid
+graph TD
+  Admin["Administrator portal\nReact / TypeScript"] --> OIDC["OIDC provider\nJWT issuer only"]
+  Hospital["Hospital workload\nlocal trainer"] --> OIDC
 
-| Earlier component | Current decision | Rationale |
-|---|---|---|
-| Express aggregator state machine | **Rewrite in NestJS; reuse transition concepts and test cases** | The existing in-memory `Map` and unauthenticated endpoints are valuable prototypes, but not durable domain services |
-| In-memory coordination adapter | **Reuse interface; replace implementation** | The model-version identifier and checksum policy are useful; persistence, approval, artifact retention, and rollback need a real registry |
-| Python `federated_core.py` | **Reuse and extend as reference library** | It has tested sample-weighted aggregation, finite checks, integer-buffer policy, and FedProx loss primitives; production needs artifact I/O, declared BatchNorm policy, device controls, and result envelopes |
-| Deterministic two-site experiment/matrix | **Reuse as software-verification fixture** | It validates the pipeline only; it must not become a breast-cancer performance claim |
-| Hospital/admin services and UIs | **Defer from this product** | The current product boundary is aggregator core plus future admin portal; hospital products will become separate repositories when their requirements are approved |
-| Solidity registry scaffold | **Defer behind coordination adapter** | No blockchain runtime until the central audited workflow and its governance claims are tested without it |
-| OpenAPI documentation site | **Reuse and extend** | It is the decision ledger and API-contract surface; generated reference must later consume the runtime OpenAPI artifact |
+  OIDC --> API["Aggregator Core\nNestJS / Node.js"]
+  Hospital -->|"manifest + authenticated API"| API
+  Hospital -->|"direct signed upload"| Storage["S3-compatible storage\nmodel artifacts only"]
 
-## Explicitly rejected or deferred options
+  API --> Guards["identity → scope → idempotency\nrate/payload → audit context"]
+  Guards --> Postgres["PostgreSQL\ndomain state + audit + release ledger"]
+  API --> Redis["Redis + BullMQ\ncontrol jobs"]
+  Redis --> Dispatcher["Node dispatch worker"]
+  Dispatcher --> Python["Python ML worker\nPyTorch / optional Flower adapter"]
+  Python --> Storage
+  Python -->|"signed JobResult callback"| API
+  API --> Registry["model registry +\nhuman approval workflow"]
+  Registry --> Release["approved model release\nmanifest + evidence bundle"]
+```
 
-An all-Node.js ML stack is rejected because the research stack, PyTorch ecosystem, existing tested FL reference, and future Flower compatibility are Python-native. An all-Python backend is rejected because TypeScript is preferred for the governance-heavy control plane, administrator-facing API, contract generation, and future portal integration.
+## 10. Aggregation and release sequence
 
-Immediate Kubernetes, blockchain-backed release enforcement, multi-region deployment, full hospital integration, direct database access by the ML worker, and unrestricted “try it out” API documentation are deferred. They add operational surface before the controlled core workflow has been validated.
+```mermaid
+sequenceDiagram
+  participant Site as Hospital workload
+  participant API as Aggregator Core
+  participant Store as Object storage
+  participant Queue as BullMQ
+  participant ML as Python ML worker
+  participant Ledger as Postgres release ledger
+  participant Admin as Authorized approver
 
-## Architecture gate 2: decisions required before implementation
+  Site->>API: Request upload intent (round, protocol, architecture)
+  API->>Ledger: Verify active participant + record request
+  API-->>Site: Short-lived signed upload target
+  Site->>Store: Upload weight/metrics artifacts
+  Site->>API: Submit manifest + digest + local metadata
+  API->>Ledger: Create submission: pending_validation
+  API->>Queue: Enqueue artifact verification
+  Queue->>ML: Validate tensor compatibility
+  ML-->>API: Validation result
+  API->>Ledger: accepted or quarantined
+  alt Threshold or deadline satisfied
+    API->>Queue: Enqueue immutable aggregation command
+    Queue->>ML: Dispatch AggregationJob
+    ML->>Store: Write candidate artifact + evidence
+    ML-->>API: Signed JobResult callback
+    API->>Ledger: Create candidate model version
+    Admin->>API: Approve release with reason
+    API->>Ledger: Append published release event
+    API-->>Site: Approved release available
+  end
+```
 
-1. Confirm **NestJS + TypeScript** for the control plane and **PyTorch + Python** for ML workers.
-2. Confirm a modular monolith for the first Node.js runtime, with no early split into independent control-plane microservices.
-3. Confirm PostgreSQL for domain state and S3-compatible storage for model artifacts.
-4. Confirm external OIDC-compatible identity for humans and separate workload credentials for sites/workers.
-5. Confirm HTTP plus versioned schemas for the first Node↔Python workflow; NATS JetStream remains a measured later upgrade.
-6. Confirm the existing Python reference library is a reusable baseline, while in-memory Express and coordination prototypes are rewritten/replaced.
-7. Confirm BatchNorm behavior is a formal protocol decision to test on the production vision architecture before real experiments.
+## 11. What is retained, rebuilt, and deferred from earlier work
+
+The earlier clean-room prototype remains useful but is not deployed as-is. The tested Python aggregation and FedProx primitives are retained as the reference library. The Express round-state logic and test cases inform the new NestJS implementation, but its in-memory storage and unauthenticated endpoints are rebuilt. The in-memory coordination adapter contributes an interface and checksum concept, but is replaced by PostgreSQL, artifact storage, approval events, and rollback records.
+
+The hospital backend/frontend, standalone administrator portal, blockchain registry, and IPFS layer remain separate product lines. They are not embedded into the core backend until their own requirements, threat model, and integration contracts are approved.
 
 ## References
 
-[1] NestJS, [*Microservices*](https://docs.nestjs.com/microservices/basics).
+[1] Flower, [*Flower Framework documentation*](https://flower.ai/docs/framework/index.html).
 
-[2] Flower, [*Flower Framework documentation*](https://flower.ai/docs/framework/index.html).
+[2] NestJS, [*Microservices*](https://docs.nestjs.com/microservices/basics).
 
 [3] Li et al., [*Federated Optimization in Heterogeneous Networks*](https://proceedings.mlsys.org/paper/2020/hash/1f5fe83998a09396ebe6477d9475ba0c-Abstract.html), MLSys, 2020.
-
-[4] OWASP, [*Authentication Cheat Sheet*](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html).
-
-[5] OWASP, [*Session Management Cheat Sheet*](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html).
-
-[6] OWASP, [*REST Security Cheat Sheet*](https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html).

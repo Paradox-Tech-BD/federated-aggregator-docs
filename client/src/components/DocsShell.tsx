@@ -8,7 +8,7 @@ import { useState } from "react";
 
 const navItems = [
   { href: "/", label: "Product brief", index: "01", icon: BookOpen },
-  { href: "/requirements", label: "Requirements analysis", index: "02", icon: ClipboardList },
+  { href: "/requirements", label: "Integrated requirements", index: "02", icon: ClipboardList },
   { href: "/technical-requirements", label: "System specification", index: "03", icon: Braces },
   { href: "/architecture", label: "Architecture", index: "04", icon: Network },
   { href: "/api", label: "API reference", index: "05", icon: Braces },

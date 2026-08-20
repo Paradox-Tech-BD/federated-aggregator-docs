@@ -7,7 +7,7 @@ import { Link } from "wouter";
 import { StatusStamp } from "@/components/StatusStamp";
 
 const chapters = [
-  ["02", "Requirements analysis", "Federation stakeholders, governance, research gaps, risks, opportunities, and acceptance criteria."],
+  ["02", "Integrated requirements", "Connected research, stakeholder, governance, workflow, security, data, model, and technical requirements."],
   ["03", "System specification", "Authentication, backend middleware, artifact pipeline, queues, worker contract, and release ledger."],
   ["04", "Architecture", "Round state machine, artifact flow, validation, and release bundle."],
   ["05", "API reference", "Versioned OpenAPI contract with safe mock/local request tooling."],
@@ -51,7 +51,7 @@ export default function Home() {
         <div className="chapter-list">
           <div className="section-heading"><span>CORE DOCUMENT INDEX</span><span>5 READING PATHS</span></div>
           {chapters.map(([index, title, description]) => (
-            <Link href={title === "Requirements analysis" ? "/requirements" : title === "System specification" ? "/technical-requirements" : title === "Architecture" ? "/architecture" : title === "API reference" ? "/api" : title === "Research log" ? "/research-log" : "/"} className="chapter-row" key={index}>
+            <Link href={title === "Integrated requirements" ? "/requirements" : title === "System specification" ? "/technical-requirements" : title === "Architecture" ? "/architecture" : title === "API reference" ? "/api" : title === "Research log" ? "/research-log" : "/"} className="chapter-row" key={index}>
               <span className="chapter-row-index">{index}</span>
               <div><h3>{title}</h3><p>{description}</p></div>
               <ArrowUpRight size={18} />

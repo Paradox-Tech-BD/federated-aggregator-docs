@@ -34,3 +34,12 @@
 - [x] Make the distinction between project requirements analysis and technical system specification explicit in the navigation and chapter introductions.
 - [ ] Verify direct links and mobile navigation for both chapters.
 - [ ] Commit and push the corrected documentation route using the user's Git identity.
+
+## Deep Integrated Requirements Analysis
+
+- [x] Map the supplied example’s structural depth to federated-aggregator-specific concerns without reusing its unrelated content.
+- [x] Expand the project requirements into connected stakeholder, governance, research, workflow, data, artifact, security, operations, observability, and acceptance requirements.
+- [x] Consolidate the business/research and technical requirements so that each technical decision traces to a project need or research risk.
+- [x] Reorganize the documentation reading path around the single comprehensive requirements specification.
+- [ ] Verify the revised requirements chapter and navigation at desktop and mobile widths.
+- [ ] Commit and push the expanded requirements-analysis documentation using the user's Git identity.

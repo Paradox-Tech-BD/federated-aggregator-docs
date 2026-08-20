@@ -50,3 +50,11 @@
 - [x] Add Vercel static-build settings and SPA deep-link rewrites.
 - [x] Build and verify the configured static output for all documentation routes.
 - [ ] Commit and push the Vercel deployment configuration using the user's Git identity.
+
+## Documentation Interface Refresh
+
+- [x] Review the deployed documentation shell and identify visual regressions from the earlier design.
+- [x] Define a refined modern documentation system with improved hierarchy, navigation, and reading rhythm.
+- [x] Refresh the shell, home page, and core chapter presentation without reintroducing deployment-dependent assets.
+- [x] Verify the refreshed desktop and mobile layouts plus Vercel static build output.
+- [ ] Commit and push the documentation interface refresh using the user's Git identity.

@@ -31,9 +31,15 @@ export default function Home() {
             <Link href="/architecture" className="editorial-link">Read the architecture <ChevronRight size={17} /></Link>
             <Link href="/api" className="editorial-link muted">Inspect the API contract <ChevronRight size={17} /></Link>
           </div>
+          <div className="hero-scope-strip">
+            <div><span>CORE</span><strong>Aggregator control plane</strong></div>
+            <div><span>BOUNDARY</span><strong>Raw data stays local</strong></div>
+            <div><span>STATUS</span><strong>Research-only release</strong></div>
+          </div>
         </div>
         <div className="hero-art" aria-hidden="true">
           <div className="hero-topology"><span className="topology-node node-one" /><span className="topology-node node-two" /><span className="topology-node node-three" /><span className="topology-ring ring-one" /><span className="topology-ring ring-two" /><span className="topology-link link-one" /><span className="topology-link link-two" /><span className="topology-link link-three" /></div>
+          <div className="hero-art-status"><span className="status-signal" />ROUND / VALIDATION READY</div>
           <div className="hero-art-caption"><CircleDot size={14} /> update validation → deterministic aggregation → approved release</div>
         </div>
       </section>
@@ -45,6 +51,13 @@ export default function Home() {
           <p>Hospitals train against the received global parameters with a proximal penalty. The core service records the declared μ and validates compatible updates; it does not claim to apply the proximal term merely by averaging weights.</p>
         </div>
         <StatusStamp status="VALIDATED" />
+      </section>
+
+      <section className="reading-compass" aria-label="Documentation reading guidance">
+        <div className="compass-mark"><GitBranch size={18} /></div>
+        <div><span>START HERE</span><h2>Read the requirements before the interface contract.</h2></div>
+        <p>The documentation is sequenced as a decision trail: purpose, integrated requirements, technical response, architecture, then the public API contract.</p>
+        <Link href="/requirements">Open requirements <ArrowUpRight size={16} /></Link>
       </section>
 
       <section className="reading-grid">

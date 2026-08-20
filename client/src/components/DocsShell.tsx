@@ -47,6 +47,11 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
+        <div className="sidebar-runtime" aria-label="Documentation environment">
+          <div><span className="runtime-dot" aria-hidden="true" /><span>RESEARCH DOCUMENTATION</span></div>
+          <p>Static release · protocol workbench</p>
+        </div>
+
         <div className="sidebar-footnote">
           <ShieldCheck size={15} />
           <span>Documentation mode: no production credentials, raw images, or live model releases.</span>

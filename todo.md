@@ -43,3 +43,10 @@
 - [x] Reorganize the documentation reading path around the single comprehensive requirements specification.
 - [ ] Verify the revised requirements chapter and navigation at desktop and mobile widths.
 - [ ] Commit and push the expanded requirements-analysis documentation using the user's Git identity.
+
+## Vercel Static Deployment
+
+- [x] Inspect the current Vite output and existing Vercel configuration.
+- [x] Add Vercel static-build settings and SPA deep-link rewrites.
+- [x] Build and verify the configured static output for all documentation routes.
+- [ ] Commit and push the Vercel deployment configuration using the user's Git identity.

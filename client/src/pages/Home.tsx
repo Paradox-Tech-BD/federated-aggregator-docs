@@ -33,7 +33,7 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-art" aria-hidden="true">
-          <img src="/manus-storage/aggregator-ledger-hero_0f9d5391.png" alt="" />
+          <div className="hero-topology"><span className="topology-node node-one" /><span className="topology-node node-two" /><span className="topology-node node-three" /><span className="topology-ring ring-one" /><span className="topology-ring ring-two" /><span className="topology-link link-one" /><span className="topology-link link-two" /><span className="topology-link link-three" /></div>
           <div className="hero-art-caption"><CircleDot size={14} /> update validation → deterministic aggregation → approved release</div>
         </div>
       </section>
@@ -59,7 +59,7 @@ export default function Home() {
           ))}
         </div>
         <aside className="right-margin">
-          <img src="/manus-storage/aggregator-ledger-margin_bc069bce.png" alt="" className="margin-texture" />
+          <div className="margin-constellation" aria-hidden="true" />
           <div className="margin-note">
             <span>WORKING SCOPE</span>
             <strong>Aggregator core + admin portal</strong>

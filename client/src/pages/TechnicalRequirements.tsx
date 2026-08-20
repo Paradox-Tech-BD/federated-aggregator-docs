@@ -41,8 +41,8 @@ const tables = [
 export default function TechnicalRequirements() {
   return (
     <div className="doc-page specification-page">
-      <header className="doc-topbar"><p>02 / SYSTEM SPECIFICATION</p><StatusStamp status="PROVISIONAL" /></header>
-      <section className="page-title"><p className="folio">02.0 / CORE AGGREGATOR REQUIREMENTS</p><h1>Own the policy.<br /><i>Isolate the math.</i></h1><p>A full requirements specification for the first core product: a Node.js control plane that governs federation decisions and a Python worker plane that performs declared model aggregation.</p></section>
+      <header className="doc-topbar"><p>03 / SYSTEM SPECIFICATION</p><StatusStamp status="PROVISIONAL" /></header>
+      <section className="page-title"><p className="folio">03.0 / TECHNICAL RESPONSE TO REQUIREMENTS</p><h1>Own the policy.<br /><i>Isolate the math.</i></h1><p>This chapter is the technical response to the preceding Requirements Analysis. It specifies how the aggregator core can meet the project’s federated research and governance needs; it does not replace the non-technical requirements chapter.</p></section>
 
       <section className="spec-intent"><div><ServerCog size={22} /><span>CORE CONTRACT</span></div><h2>The core accepts verifiable update manifests, coordinates compatible aggregation work, and releases approved models. It never collects raw hospital images or local training data.</h2><StatusStamp status="VALIDATED" /></section>
 

@@ -2,15 +2,16 @@
  * Research Ledger design: persistent index rail, editorial reading column,
  * and precise evidence/status treatment for a federated-aggregator record.
  */
-import { BookOpen, Braces, Menu, Network, ShieldCheck, X } from "lucide-react";
+import { BookOpen, Braces, ClipboardList, Menu, Network, ShieldCheck, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 
 const navItems = [
   { href: "/", label: "Product brief", index: "01", icon: BookOpen },
-  { href: "/technical-requirements", label: "System specification", index: "02", icon: Braces },
-  { href: "/architecture", label: "Architecture", index: "03", icon: Network },
-  { href: "/api", label: "API reference", index: "04", icon: Braces },
+  { href: "/requirements", label: "Requirements analysis", index: "02", icon: ClipboardList },
+  { href: "/technical-requirements", label: "System specification", index: "03", icon: Braces },
+  { href: "/architecture", label: "Architecture", index: "04", icon: Network },
+  { href: "/api", label: "API reference", index: "05", icon: Braces },
 ];
 
 export function DocsShell({ children }: { children: React.ReactNode }) {

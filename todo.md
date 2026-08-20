@@ -26,3 +26,11 @@
 - [x] Replace redundant navigation groups with a single responsive chapter index and contextual page controls.
 - [ ] Verify the revised technical page at desktop and mobile breakpoints.
 - [ ] Commit and push the revised documentation update using the user's Git identity.
+
+## Requirements Analysis Route Correction
+
+- [x] Audit the visible requirements and system-specification chapters for cross-project example content.
+- [x] Restore the federated-aggregator Requirements Analysis as a visible primary route.
+- [x] Make the distinction between project requirements analysis and technical system specification explicit in the navigation and chapter introductions.
+- [ ] Verify direct links and mobile navigation for both chapters.
+- [ ] Commit and push the corrected documentation route using the user's Git identity.

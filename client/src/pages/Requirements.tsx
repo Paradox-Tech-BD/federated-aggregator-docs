@@ -23,7 +23,7 @@ export default function Requirements() {
   return (
     <div className="doc-page requirements-page">
       <header className="doc-topbar"><p>02 / REQUIREMENTS</p><StatusStamp status="PROVISIONAL" /></header>
-      <section className="page-title"><p className="folio">02.0 / BEFORE ARCHITECTURE</p><h1>Build the process<br /><i>before the platform.</i></h1><p>The aggregator is a model-release control plane for a research federation. This page captures what stakeholders need it to achieve before choosing the internal architecture.</p></section>
+      <section className="page-title"><p className="folio">02.0 / BEFORE ARCHITECTURE</p><h1>Build the process<br /><i>before the platform.</i></h1><p>This is the project’s non-technical Requirements Analysis: it captures stakeholder needs, governance, business value, research gaps, risks, and acceptance criteria before choosing implementation details. The next chapter translates these needs into a technical system specification.</p></section>
 
       <section className="requirements-manifesto"><div className="manifest-icon"><FileText size={23} /></div><div><span>PRODUCT PROMISE</span><h2>A site can understand what it contributed. An administrator can explain why a model exists. An auditor can reconstruct the path from protocol to release.</h2></div><StatusStamp status="VALIDATED" /></section>
 

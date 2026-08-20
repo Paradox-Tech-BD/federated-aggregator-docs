@@ -3,6 +3,7 @@ import { DocsShell } from "@/components/DocsShell";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Architecture from "@/pages/Architecture";
+import DataManagement from "@/pages/DataManagement";
 import ApiReference from "@/pages/ApiReference";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
@@ -21,6 +22,7 @@ function Router() {
         <Route path="/requirements" component={Requirements} />
         <Route path="/technical-requirements" component={TechnicalRequirements} />
         <Route path="/architecture" component={Architecture} />
+        <Route path="/data-management" component={DataManagement} />
         <Route path="/api" component={ApiReference} />
         <Route path="/research-log" component={ResearchLog} />
         <Route component={NotFound} />

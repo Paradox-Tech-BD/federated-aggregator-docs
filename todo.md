@@ -58,3 +58,12 @@
 - [x] Refresh the shell, home page, and core chapter presentation without reintroducing deployment-dependent assets.
 - [x] Verify the refreshed desktop and mobile layouts plus Vercel static build output.
 - [ ] Commit and push the documentation interface refresh using the user's Git identity.
+
+## Data Management and Schema Design
+
+- [x] Extract the structural depth of the supplied schema example without reusing its unrelated entities or content.
+- [x] Research federated-healthcare data lineage, artifact governance, privacy boundaries, and schema requirements.
+- [x] Define original schema groups for identity, federation governance, protocol/rounds, artifacts, aggregation jobs, release ledger, audit, and retention.
+- [x] Create original Mermaid ERD, artifact-flow, and retention/lineage diagrams.
+- [x] Add the detailed data-management chapter and diagrams to the Vercel-hosted documentation site.
+- [x] Verify Mermaid rendering, mobile layout, and Vercel static build, then commit and push the update using the user's Git identity.

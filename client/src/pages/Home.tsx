@@ -10,7 +10,8 @@ const chapters = [
   ["02", "Integrated requirements", "Connected research, stakeholder, governance, workflow, security, data, model, and technical requirements."],
   ["03", "System specification", "Authentication, backend middleware, artifact pipeline, queues, worker contract, and release ledger."],
   ["04", "Architecture", "Round state machine, artifact flow, validation, and release bundle."],
-  ["05", "API reference", "Versioned OpenAPI contract with safe mock/local request tooling."],
+  ["05", "Data management", "Mermaid schema groups, local-data boundary, artifact lineage, retention, and release evidence."],
+  ["06", "API reference", "Versioned OpenAPI contract with safe mock/local request tooling."],
   ["LOG", "Research log", "Chronological decisions, failed runs, corrective actions, and accepted evidence."],
 ];
 
@@ -62,9 +63,9 @@ export default function Home() {
 
       <section className="reading-grid">
         <div className="chapter-list">
-          <div className="section-heading"><span>CORE DOCUMENT INDEX</span><span>5 READING PATHS</span></div>
+          <div className="section-heading"><span>CORE DOCUMENT INDEX</span><span>6 READING PATHS</span></div>
           {chapters.map(([index, title, description]) => (
-            <Link href={title === "Integrated requirements" ? "/requirements" : title === "System specification" ? "/technical-requirements" : title === "Architecture" ? "/architecture" : title === "API reference" ? "/api" : title === "Research log" ? "/research-log" : "/"} className="chapter-row" key={index}>
+            <Link href={title === "Integrated requirements" ? "/requirements" : title === "System specification" ? "/technical-requirements" : title === "Architecture" ? "/architecture" : title === "Data management" ? "/data-management" : title === "API reference" ? "/api" : title === "Research log" ? "/research-log" : "/"} className="chapter-row" key={index}>
               <span className="chapter-row-index">{index}</span>
               <div><h3>{title}</h3><p>{description}</p></div>
               <ArrowUpRight size={18} />

@@ -1,0 +1,112 @@
+openapi: 3.1.0
+info:
+  title: Federated Aggregator Core API
+  version: 0.1.0
+  description: |
+    Contract for the central federated-learning aggregator. Raw hospital images are not accepted.
+    The public documentation reference defaults to deterministic mock responses.
+servers:
+  - url: https://mock.local.example/api/v1
+    description: Safe deterministic documentation mock
+  - url: http://localhost:4100/api/v1
+    description: Explicit local development service
+paths:
+  /rounds/{roundId}:
+    get:
+      summary: Inspect a round
+      operationId: getRound
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/RoundId'
+      responses:
+        '200':
+          description: Round state and protocol metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Round'
+  /rounds/{roundId}/updates:
+    post:
+      summary: Submit a model-update manifest
+      operationId: submitUpdate
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/RoundId'
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateManifest'
+      responses:
+        '201':
+          description: Update accepted for validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionReceipt'
+  /releases/{releaseId}/publish:
+    post:
+      summary: Publish an approved model release
+      description: Restricted operation. Disabled in public documentation.
+      operationId: publishRelease
+      security:
+        - bearerAuth: [releases:publish]
+      parameters:
+        - in: path
+          name: releaseId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Model release published
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    RoundId:
+      in: path
+      name: roundId
+      required: true
+      schema:
+        type: string
+  schemas:
+    Round:
+      type: object
+      required: [id, state, algorithm, mu, accepted_updates]
+      properties:
+        id: { type: string }
+        state: { type: string, enum: [draft, open, collecting, validating, aggregating, awaiting-approval, published, closed] }
+        algorithm: { type: string, enum: [fedavg, fedprox] }
+        mu: { type: number, minimum: 0 }
+        accepted_updates: { type: integer, minimum: 0 }
+    UpdateManifest:
+      type: object
+      required: [participant_id, sample_count, artifact_sha256, architecture_id, preprocessing_id, algorithm]
+      properties:
+        participant_id: { type: string }
+        sample_count: { type: integer, minimum: 1 }
+        artifact_sha256: { type: string, pattern: '^[a-f0-9]{64}$' }
+        architecture_id: { type: string }
+        preprocessing_id: { type: string }
+        algorithm: { type: string, enum: [fedavg, fedprox] }
+        mu: { type: number, minimum: 0 }
+        local_epochs: { type: integer, minimum: 1 }
+    SubmissionReceipt:
+      type: object
+      required: [submission_id, status, request_id]
+      properties:
+        submission_id: { type: string }
+        status: { type: string, enum: [queued-for-validation] }
+        request_id: { type: string }

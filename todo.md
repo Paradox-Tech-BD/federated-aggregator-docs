@@ -285,3 +285,10 @@
 - [x] Create and configure the Render Static Site, verify its public root and direct research-log route, and retain the current managed documentation domain as a fallback.
 - [x] Record the external-hosting URL, settings, validation evidence, and GitHub-authentication limitation in the research ledger and deployment guide.
 - [ ] Restore sandbox GitHub authentication and push the committed `render.yaml`/ledger changes so the remote main branch reproduces the running Render configuration.
+
+## Azure VPS Production Hosting Preparation
+
+- [x] Define the hosted production boundary for the Core API, dispatch worker, Python ML worker, PostgreSQL, Redis/Sentinel, object storage integration, administrator portal, documentation mirror, and future project applications.
+- [x] Specify Azure Network Security Group ingress and egress rules using least privilege, including SSH source restriction, public TLS endpoints, private service ports, and managed-service dependencies.
+- [ ] Prepare a VPS bootstrap and deployment runbook covering a non-root operator account, SSH key-only access, firewall, container runtime, secrets, backups, TLS, monitoring, and recovery evidence.
+- [ ] Deploy and validate services only after the user provides a dedicated least-privilege SSH access path and confirms the selected Azure boundary.

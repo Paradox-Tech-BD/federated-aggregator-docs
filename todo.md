@@ -308,3 +308,22 @@
 - [x] Execute and observe a test deployment, including internal liveness/readiness and HTTPS health verification.
 - [x] Validate the `main`-triggered GitHub Actions release path: Core Quality Gates and the protected SSH deployment completed for commit `25c7073`; public liveness and private container state were verified.
 - [ ] Replace synthetic test configuration only after real protected storage/OIDC inputs, the Python aggregation-worker runtime, and workload-identity validation are implemented.
+
+## Render Core Test Hosting
+
+- [ ] Create one public Core API web service on Render’s free tier; retain PostgreSQL, Redis, and Cloudflare R2-compatible storage as external managed dependencies.
+- [x] Retain the continuous dispatch worker and complete Core CI/CD topology on Azure because the Render free tier cannot host the required always-on background worker.
+- [x] Select the Render free API tier after the paid Starter flow requested billing; it provides 512 MB RAM and 0.1 CPU, with spin-down after inactivity; do not create a paid service or request payment details.
+- [x] Create the free `federated-aggregator-core-api-test` web service at `https://federated-aggregator-core-api-test.onrender.com`; its initial build uses Core commit `daaf132` and remains pending health verification.
+- [x] Confirm the initial Docker build completed and Render began the free API instance; it is waiting for a successful internal `/health/ready` response and is not yet an accepted deployment.
+- [x] Confirm the Render process registered the Core HTTP routes and started the Nest application; the platform health check remains pending, and the provider emitted a non-fatal PostgreSQL SSL-mode compatibility warning for later remediation.
+- [x] Confirm the configured custom R2-compatible endpoint is reachable over IPv4 but returns HTTP 404 for both its root and the Core adapter’s path-style bucket route; treat object storage as the current readiness blocker until the true S3 API endpoint or compatible bucket addressing is supplied.
+- [ ] Configure Docker build/start settings, health/readiness checks, non-secret configuration validation, and explicit separation from the existing Azure test deployment for each Render service.
+- [x] Grant Render App access only to `Paradox-Tech-BD/federated-aggregator-core`, then stage the separate API service with the `main` branch, Singapore region, and tested `infra/deploy/Dockerfile.node` build path.
+- [x] Stage the API service’s protected runtime variables in Render, including explicit test-only OIDC placeholders; Render masks variable values in the service form, and the selected Starter instance requires active Render billing before service creation can complete.
+- [x] Configure the staged API service with `/health/ready`, Docker command `node apps/api/dist/main.js`, and a pre-deploy compiled migration command; no persistent disk or registry credential is configured.
+- [ ] Complete Render’s final free-tier service-form validation and create the API; free-tier controls cleared the pre-deploy migration field, so migrations must be run separately through the approved database path.
+- [x] Receive protected Neon PostgreSQL, Upstash Redis, and Cloudflare R2-compatible storage configuration for Render service settings; never copy these values into source control, the ledger, browser evidence, or deploy logs.
+- [ ] Configure the Render services with the supplied protected PostgreSQL, Redis, and Cloudflare R2 variables, using test-only placeholder OIDC values until the human identity provider is selected and configured.
+- [ ] Select and configure a real OIDC issuer, audience, and JWKS endpoint before any authenticated user, hospital, or release-management workflow is enabled on Render.
+- [ ] Deploy and verify the Render HTTPS API and private worker topology without exposing database, Redis, storage credentials, worker callbacks, telemetry, or management ports.

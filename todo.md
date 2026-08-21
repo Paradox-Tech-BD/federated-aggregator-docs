@@ -199,3 +199,17 @@
 [4] [Redis, Rate Limiter](https://redis.io/docs/latest/develop/use-cases/rate-limiter/)
 
 [5] [OpenTelemetry Collector Internal Telemetry](https://opentelemetry.io/docs/collector/internal-telemetry/)
+
+## Product-Core Phase 10 Stale Disposal Recovery
+
+- [x] Research idempotent outbox recovery and preserve the rule that an unknown storage outcome must be recorded, not automatically retried.[6]
+- [x] Add the `recovery_pending_verification` lifecycle state, an additive immutable recovery-evidence table, a fixed minimum age, platform-admin authorization, required reason, and protected Core command.
+- [x] Keep recovery redacted in the portal lifecycle summary; do not add a browser recovery or storage execution control.
+- [x] Validate Core CI: formatting, lint, type checking, recovery service tests, PostgreSQL migration/integration execution, 40 TypeScript tests, and 4 Python tests; validate the portal production build.
+- [x] Commit/push Core and portal changes under the user Git identity, record the public chronology, and checkpoint the documentation ledger.
+- [ ] Phase 11: Add a deployment-attestation record/workflow for storage/telemetry infrastructure, provider-backed verification for recovery-pending disposal outcomes, and Redis/Collector runtime testing in a real multi-instance topology.
+- [ ] Queue the matching Notion ledger update for retry after the unavailable connector/browser transport recovers.
+
+### References
+
+[6] [Microservices.io, Transactional Outbox](https://microservices.io/patterns/data/transactional-outbox.html)

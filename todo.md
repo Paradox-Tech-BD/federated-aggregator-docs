@@ -261,3 +261,19 @@
 [10] [Redis Sentinel High Availability](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/)
 
 [11] [OpenTelemetry Collector Configuration](https://opentelemetry.io/docs/collector/configuration/)
+
+## Product-Core Phase 14 Reproducible Infrastructure Validation
+
+- [x] Research Redis Sentinel distributed-failure and Collector configuration-validation constraints.[12] [13]
+- [x] Add a disposable Redis primary/replica/three-Sentinel compose topology, Sentinel configuration, controlled runbook, and a Collector `validate` command artifact.
+- [x] Run static whitespace, format, lint, type, and test checks; record accurately that Docker is unavailable in this sandbox and no topology/failover/Collector/backend/alert runtime evidence exists yet.
+- [x] Preserve the boundary that a topology artifact is not proof of Sentinel-aware Core support or production high availability.
+- [x] Commit/push the Core validation artifacts under the user Git identity, record the chronology, and checkpoint the documentation ledger.
+- [ ] Phase 15: Execute the validation topology in a disposable Docker-capable environment, record bounded deployment evidence, and decide whether the limiter needs explicit Sentinel-aware discovery support.
+- [ ] Queue the matching Notion ledger update for retry after the unavailable connector/browser transport recovers.
+
+### References
+
+[12] [Redis Sentinel High Availability](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/)
+
+[13] [OpenTelemetry Collector Configuration](https://opentelemetry.io/docs/collector/configuration/)

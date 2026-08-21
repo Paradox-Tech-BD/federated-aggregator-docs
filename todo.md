@@ -294,5 +294,6 @@
 - [x] Receive initial Azure VPS SSH access for bootstrap; do not retain password-based administration after a key-only operator path is established.
 - [x] Complete the initial VPS bootstrap: key-based operator access, updated Ubuntu baseline, SSH-only host firewall, Fail2ban, unattended updates, Docker/Compose, bounded Docker logs, swap, and source staging.
 - [x] Run the Docker Collector configuration validator and start the disposable Redis Sentinel topology on Azure; correct the harness’s Docker-DNS startup race and record the incomplete primary-loss failover result without claiming high availability.
+- [x] Add a private-by-default Core deployment definition and a supervised durable dispatch process entry point; retain explicit gates for capacity, secrets, reverse proxy/TLS, Azure NSG, owner recovery access, and the missing Python aggregation-worker runtime.
 - [ ] Resize the VPS or split services before deploying the complete Core topology; the observed 891 MiB RAM baseline is not accepted for its private dependencies and future applications.
 - [ ] Deploy and validate services after Azure NSG restriction, owner recovery access, appropriate capacity, required secrets, and executable runtime entry points are verified.

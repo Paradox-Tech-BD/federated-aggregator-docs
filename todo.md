@@ -182,3 +182,20 @@
 [2] [OWASP API4:2023 Unrestricted Resource Consumption](https://owasp.org/API-Security/editions/2023/en/0xa4-unrestricted-resource-consumption/)
 
 [3] [NIST SP 800-88 Rev. 2: Guidelines for Media Sanitization](https://doi.org/10.6028/NIST.SP.800-88r2)
+
+## Product-Core Phase 9 Shared Controls and Safe Disposal View
+
+- [x] Research and record Redis atomic rate-limit semantics and Collector self-observability constraints; keep storage-retention/sanitization claims explicitly deployment-bound.[4] [5]
+- [x] Add a Redis-backed atomic limiter selected when the configured Core has Redis, while retaining the prior process-local implementation only for no-Redis development.
+- [x] Add a federation-owner-authorized, redacted disposal lifecycle endpoint that returns only safe summary fields and excludes locators, versions, reasons, descriptors, and raw evidence.
+- [x] Add Collector self-metrics configuration and portable alert-rule templates without committing a telemetry vendor, alert receiver, paging integration, or production secret.
+- [x] Extend the portal with the safe summary and a reason-required owner approval confirmation; do not expose a browser storage-execution control.
+- [x] Validate Core CI (39 TypeScript plus 4 Python tests), PostgreSQL integration/migration execution, and portal production build; record that Docker runtime validation is unavailable in this sandbox.
+- [x] Commit/push Core and portal changes under the user Git identity, record the public chronology, and checkpoint the documentation ledger.
+- [ ] Queue the matching Notion ledger update for retry after the unavailable connector/browser transport recovers.
+
+### References
+
+[4] [Redis, Rate Limiter](https://redis.io/docs/latest/develop/use-cases/rate-limiter/)
+
+[5] [OpenTelemetry Collector Internal Telemetry](https://opentelemetry.io/docs/collector/internal-telemetry/)

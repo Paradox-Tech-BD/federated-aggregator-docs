@@ -96,3 +96,12 @@
 - [x] Specify a layered test strategy for unit, integration, contract, property, deterministic ML, security, migration, end-to-end, and resilience tests.
 - [x] Add the responsive engineering-standards chapter, original Mermaid diagrams, research/source register, and chronological/Notion decisions.
 - [x] Verify, commit, push, and checkpoint the update under the user Git identity.
+
+## Handoff Implementation Plan and Identity Scope
+
+- [x] Reconcile the approved governance, schema, workflow, system-wiring, and engineering-standards decisions into an explicit first-release feature inventory.
+- [x] Research supported OIDC/Clerk patterns and the security/product implications of MetaMask or SIWE for an institution-governed research control plane.
+- [x] Decide whether the first core requires a human user subsystem, workload identity subsystem, Clerk, wallet authentication, or a deliberately deferred wallet feature.
+- [x] Write the phased product-core implementation plan with modules, schema/migrations, APIs, worker contracts, tests, dependencies, acceptance criteria, and handoff sequence.
+- [x] Add the plan and identity decision to the documentation/Notion research ledgers.
+- [x] Verify, commit, push, and checkpoint the handoff documentation update under the user Git identity.

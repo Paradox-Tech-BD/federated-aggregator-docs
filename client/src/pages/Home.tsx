@@ -14,6 +14,7 @@ const chapters = [
   ["06", "Workflow design", "Original Mermaid flows for protocol activation, round orchestration, update validation, aggregation, release approval, and recovery."],
   ["07", "Data management", "Mermaid schema groups, local-data boundary, artifact lineage, retention, and release evidence."],
   ["08", "API reference", "Versioned OpenAPI contract with safe mock/local request tooling."],
+  ["09", "Implementation handoff", "Phased core build plan, schema inventory, identity decision, Clerk boundary, MetaMask deferral, and acceptance gates."],
   ["LOG", "Research log", "Chronological decisions, failed runs, corrective actions, and accepted evidence."],
 ];
 
@@ -59,15 +60,15 @@ export default function Home() {
       <section className="reading-compass" aria-label="Documentation reading guidance">
         <div className="compass-mark"><GitBranch size={18} /></div>
         <div><span>START HERE</span><h2>Read the requirements before the interface contract.</h2></div>
-        <p>The documentation is sequenced as a decision trail: purpose, integrated requirements, technical response, architecture, engineering rules, workflow controls, evidence data, then the public API contract.</p>
+        <p>The documentation is sequenced as a decision trail: purpose, integrated requirements, technical response, architecture, engineering rules, workflow controls, evidence data, API contract, then the build handoff.</p>
         <Link href="/requirements">Open requirements <ArrowUpRight size={16} /></Link>
       </section>
 
       <section className="reading-grid">
         <div className="chapter-list">
-          <div className="section-heading"><span>CORE DOCUMENT INDEX</span><span>8 READING PATHS</span></div>
+          <div className="section-heading"><span>CORE DOCUMENT INDEX</span><span>9 READING PATHS</span></div>
           {chapters.map(([index, title, description]) => (
-            <Link href={title === "Integrated requirements" ? "/requirements" : title === "System specification" ? "/technical-requirements" : title === "Architecture" ? "/architecture" : title === "Engineering standards" ? "/engineering-standards" : title === "Workflow design" ? "/workflow-design" : title === "Data management" ? "/data-management" : title === "API reference" ? "/api" : title === "Research log" ? "/research-log" : "/"} className="chapter-row" key={index}>
+            <Link href={title === "Integrated requirements" ? "/requirements" : title === "System specification" ? "/technical-requirements" : title === "Architecture" ? "/architecture" : title === "Engineering standards" ? "/engineering-standards" : title === "Workflow design" ? "/workflow-design" : title === "Data management" ? "/data-management" : title === "API reference" ? "/api" : title === "Implementation handoff" ? "/implementation-plan" : title === "Research log" ? "/research-log" : "/"} className="chapter-row" key={index}>
               <span className="chapter-row-index">{index}</span>
               <div><h3>{title}</h3><p>{description}</p></div>
               <ArrowUpRight size={18} />

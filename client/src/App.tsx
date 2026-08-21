@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Architecture from "@/pages/Architecture";
 import DataManagement from "@/pages/DataManagement";
 import EngineeringStandards from "@/pages/EngineeringStandards";
+import ImplementationPlan from "@/pages/ImplementationPlan";
 import ApiReference from "@/pages/ApiReference";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
@@ -28,6 +29,7 @@ function Router() {
         <Route path="/workflow-design" component={WorkflowDesign} />
         <Route path="/data-management" component={DataManagement} />
         <Route path="/api" component={ApiReference} />
+        <Route path="/implementation-plan" component={ImplementationPlan} />
         <Route path="/research-log" component={ResearchLog} />
         <Route component={NotFound} />
       </Switch>

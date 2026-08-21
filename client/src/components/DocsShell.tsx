@@ -2,7 +2,7 @@
  * Research Ledger design: persistent index rail, editorial reading column,
  * and precise evidence/status treatment for a federated-aggregator record.
  */
-import { BookOpen, Braces, ClipboardList, Code2, Database, Menu, Network, ShieldCheck, Workflow, X } from "lucide-react";
+import { BookOpen, Braces, ClipboardList, Code2, Database, ListChecks, Menu, Network, ShieldCheck, Workflow, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 
@@ -15,6 +15,7 @@ const navItems = [
   { href: "/workflow-design", label: "Workflow design", index: "06", icon: Workflow },
   { href: "/data-management", label: "Data management", index: "07", icon: Database },
   { href: "/api", label: "API reference", index: "08", icon: Braces },
+  { href: "/implementation-plan", label: "Implementation handoff", index: "09", icon: ListChecks },
 ];
 
 export function DocsShell({ children }: { children: React.ReactNode }) {

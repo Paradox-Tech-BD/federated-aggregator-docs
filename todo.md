@@ -213,3 +213,18 @@
 ### References
 
 [6] [Microservices.io, Transactional Outbox](https://microservices.io/patterns/data/transactional-outbox.html)
+
+## Product-Core Phase 11 Deployment Attestations
+
+- [x] Research deployment-attestation and distributed rate-limit validation constraints while treating provider evidence as a controlled reference rather than a live-cloud claim.[7]
+- [x] Add a Core schema, migration, application service, PostgreSQL adapter, platform-admin record path, federation-owner safe-summary read, audit/outbox evidence, and protected API routes.
+- [x] Keep the public/browser-safe summary limited to scope, assurance label, evidence digest, and review time; exclude raw provider configuration, credentials, evidence references, artifact/model bytes, and patient data.
+- [x] Extend the portal with a protected deployment-evidence count only; do not add a browser recording control.
+- [x] Validate full Core CI (42 TypeScript plus 4 Python tests), PostgreSQL migration/integration execution, and portal production build; commit/push with the user Git identity.
+- [x] Record the chronology and checkpoint the documentation ledger.
+- [ ] Phase 12: Add provider-backed recovery-resolution evidence, an attestation review/expiry policy, real multi-instance Redis-unavailable testing, and deployed Collector/backend/alert-receiver validation.
+- [ ] Queue the matching Notion ledger update for retry after the unavailable connector/browser transport recovers.
+
+### References
+
+[7] [Redis, Rate Limiter](https://redis.io/docs/latest/develop/use-cases/rate-limiter/)

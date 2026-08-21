@@ -147,3 +147,10 @@
 - [x] Implement immutable candidates, evaluation-evidence descriptors, separated human approvals, release envelopes, safe rollbacks, review-only retention, audits, outbox records, and protected human routes.
 - [x] Verify candidate provenance, self-approval denial, evidence and approval thresholds, descriptor integrity, idempotent publication/rollback, migration execution, and the complete 32 TypeScript plus 4 Python test evidence set.
 - [ ] Record the milestone in Notion, commit/push the core and public chronology changes, and checkpoint the documentation site under the user Git identity.
+
+## Product-Core Phase 6 Operational Resilience
+
+- [x] Research and define bounded retry, dead-letter, dependency readiness, correlation visibility, and review-only retention constraints.
+- [x] Implement delivery-state records, operator intervention evidence, protected operations read/control routes, PostgreSQL/Redis/object-storage readiness, and pending-only publisher guards.
+- [x] Verify readiness failure isolation, platform-admin authorization, retry/dead-letter idempotency, migration execution, audit visibility, and the complete 36 TypeScript plus 4 Python test evidence set.
+- [ ] Record the milestone in Notion, commit/push the core and public chronology changes, and checkpoint the documentation site under the user Git identity.

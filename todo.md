@@ -137,4 +137,6 @@
 - [x] Implement immutable aggregation jobs, frozen verified inputs, dispatch attempts, worker-result evidence, queue leases, and PostgreSQL reconciliation records.
 - [x] Implement descriptor-only command/result contracts, verified-artifact-only BullMQ dispatch, deterministic Python FedAvg/FedProx-compatible averaging, and separate ML-worker callback authentication.
 - [x] Verify canonical TypeScript/Python fixtures, duplicate delivery, dispatch identity, deterministic aggregation, malformed input rejection, stale callback rejection, candidate-ready transition, migration execution, and the 31 TypeScript plus 4 Python test evidence set.
-- [ ] Record the milestone in Notion, commit/push the core and public chronology updates, and checkpoint the documentation site under the user Git identity.
+- [x] Commit and push the core implementation and public chronology updates under the user Git identity.
+- [ ] Retry the matching Notion ledger entry when Notion connector/browser transport is reachable; current attempts failed at connector initialization and network timeout.
+- [ ] Checkpoint the documentation site under the user Git identity.

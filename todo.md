@@ -277,3 +277,10 @@
 [12] [Redis Sentinel High Availability](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/)
 
 [13] [OpenTelemetry Collector Configuration](https://opentelemetry.io/docs/collector/configuration/)
+
+## External Render Hosting
+
+- [x] Confirm the user’s Render browser session and determine whether the documentation site will be created as a static site from the existing GitHub repository.
+- [x] Verify the Render build command, publish directory, SPA routing behavior, and environment requirements against the existing Vercel-compatible static build.
+- [ ] Create or configure the Render service in the user’s account and verify the public deployment without disabling the current managed documentation domain.
+- [ ] Record the external-hosting URL, settings, and validation evidence in the research ledger and Core handoff roadmap.

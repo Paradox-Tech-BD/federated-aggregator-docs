@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: federated-aggregator-docs
+    runtime: static
+    branch: main
+    buildCommand: pnpm install --frozen-lockfile && pnpm vercel-build
+    staticPublishPath: ./dist/public
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

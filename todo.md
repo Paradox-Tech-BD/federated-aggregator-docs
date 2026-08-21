@@ -245,3 +245,19 @@
 [8] [NIST SP 800-88 Rev. 2: Guidelines for Media Sanitization](https://csrc.nist.gov/pubs/sp/800/88/r2/final)
 
 [9] [OpenTelemetry Collector Configuration](https://opentelemetry.io/docs/collector/configuration/)
+
+## Product-Core Phase 13 Attestation Freshness Policy
+
+- [x] Research bounded attestation review/expiry policy and distributed Redis/Collector validation requirements.[10] [11]
+- [x] Add a fixed 90-day expiry to every deployment attestation, including a migration backfill, protected safe-summary field, and portal-safe type.
+- [x] Preserve the interpretation boundary: expiry marks review freshness only; it does not diagnose deployment configuration or imply a compliance result.
+- [x] Validate full Core CI (43 TypeScript plus 4 Python tests), PostgreSQL migration/integration execution, and portal production build; commit/push Core and portal milestones with the user Git identity.
+- [x] Record the chronology and checkpoint the documentation ledger.
+- [ ] Phase 14: Build a real multi-instance Redis outage/failover test harness and deployed Collector/backend/alert-receiver validation record; retain the no-automatic-retry rule for provider-unavailable verification.
+- [ ] Queue the matching Notion ledger update for retry after the unavailable connector/browser transport recovers.
+
+### References
+
+[10] [Redis Sentinel High Availability](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/)
+
+[11] [OpenTelemetry Collector Configuration](https://opentelemetry.io/docs/collector/configuration/)

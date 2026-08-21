@@ -16,4 +16,15 @@ The Render deployment serves only the static documentation portal. It does not h
 
 ## Validation evidence
 
-Before a Render deployment is accepted, the service must complete the static build from `main`, serve the home route, and return the SPA shell for at least one documented deep link. The eventual public Render URL and deployment timestamp are to be recorded in this file and the research chronology after validation.
+| Evidence item | Recorded result |
+|---|---|
+| Public endpoint | [`https://federated-aggregator-docs.onrender.com`](https://federated-aggregator-docs.onrender.com) |
+| Deployment source | Public `main` branch at `a198ceb` (`Record phase 14 validation harness milestone`) |
+| Render build | Succeeded with `pnpm install --frozen-lockfile && pnpm vercel-build` |
+| Root route | Opened successfully on 21 August 2026 |
+| Deep-link route | `/research-log` opened successfully after the `/*` → `/index.html` Rewrite was saved |
+| Managed fallback | The existing managed documentation deployment remains active |
+
+### Reproducibility follow-up
+
+The repository-local `render.yaml`, this guide, and the associated roadmap updates are committed locally as `407a368`, but the sandbox GitHub credential rejected the push. This means the remote `main` branch remains at `a198ceb` until authentication is restored; the live Render settings are configured in the Render dashboard and must be kept synchronized with the committed configuration after that recovery. No Core API, worker, hospital, patient, artifact, or model-serving component is hosted by this service.

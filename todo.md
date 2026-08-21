@@ -282,5 +282,6 @@
 
 - [x] Confirm the user’s Render browser session and determine whether the documentation site will be created as a static site from the existing GitHub repository.
 - [x] Verify the Render build command, publish directory, SPA routing behavior, and environment requirements against the existing Vercel-compatible static build.
-- [ ] Create or configure the Render service in the user’s account and verify the public deployment without disabling the current managed documentation domain.
-- [ ] Record the external-hosting URL, settings, and validation evidence in the research ledger and Core handoff roadmap.
+- [x] Create and configure the Render Static Site, verify its public root and direct research-log route, and retain the current managed documentation domain as a fallback.
+- [x] Record the external-hosting URL, settings, validation evidence, and GitHub-authentication limitation in the research ledger and deployment guide.
+- [ ] Restore sandbox GitHub authentication and push the committed `render.yaml`/ledger changes so the remote main branch reproduces the running Render configuration.

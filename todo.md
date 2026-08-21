@@ -114,3 +114,11 @@
 - [x] Implement local user, organization, membership, workload, federation, protocol, and round domain types/invariants with explicit OIDC/Clerk-ready and workload-identity ports.
 - [x] Create deterministic unit tests for membership authorization, workload separation, protocol immutability, and core round transition rules.
 - [x] Run all baseline quality gates, record the milestone in the research ledgers, then commit and push the implementation foundation under the user Git identity.
+
+## Product-Core Phase 2 Persistence and API Foundation
+
+- [x] Select Drizzle/PostgreSQL with generated reviewed SQL migrations while preserving application/domain port boundaries.
+- [x] Implement governance, audit, idempotency, transactional-outbox, participation, and append-only round-history schema records.
+- [x] Implement remote-JWKS OIDC verification, local principal hydration, separate workload vocabulary, controlled health/readiness, and a scoped federation read.
+- [x] Verify migration execution on PostgreSQL 16, transactional commit/rollback, OIDC claims, guard denial, HTTP behavior, and 17 test cases.
+- [x] Record the milestone in Notion and the public research chronology, then commit and push under the user Git identity.

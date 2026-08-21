@@ -154,3 +154,13 @@
 - [x] Implement delivery-state records, operator intervention evidence, protected operations read/control routes, PostgreSQL/Redis/object-storage readiness, and pending-only publisher guards.
 - [x] Verify readiness failure isolation, platform-admin authorization, retry/dead-letter idempotency, migration execution, audit visibility, and the complete 36 TypeScript plus 4 Python test evidence set.
 - [ ] Record the milestone in Notion, commit/push the core and public chronology changes, and checkpoint the documentation site under the user Git identity.
+
+## Product-Core Phase 7 Human Administrator Portal
+
+- [x] Research an administrator portal as a separate human-facing product, defining platform-admin and federation-owner boundaries, safe read models, explicit confirmation, accessibility, and preview-state constraints.
+- [x] Create private `paradox-tech-bd/federated-aggregator-admin-portal` with React, TypeScript, Vite, a clinical instrument-panel design, source-only repository hygiene, and validated production build.
+- [x] Add Core candidate/release governance summaries and federation-owner-protected API reads without returning artifact/model bytes, raw event payloads, patient data, evidence payloads, release envelopes, or policy internals.
+- [x] Implement safe delivery, lineage, and review-only retention surfaces; require a named target, non-empty reason, explicit consequence, and submitted state for retry/dead-letter actions.
+- [x] Verify Core CI (36 TypeScript plus 4 Python tests), PostgreSQL portal-read integration coverage, and portal production build; commit and push both private repositories with the user Git identity.
+- [x] Record the milestone in the public research chronology and checkpoint the documentation site.
+- [ ] Queue the matching Notion ledger update for retry after the unavailable connector/browser transport recovers.

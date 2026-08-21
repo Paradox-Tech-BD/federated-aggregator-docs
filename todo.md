@@ -295,5 +295,16 @@
 - [x] Complete the initial VPS bootstrap: key-based operator access, updated Ubuntu baseline, SSH-only host firewall, Fail2ban, unattended updates, Docker/Compose, bounded Docker logs, swap, and source staging.
 - [x] Run the Docker Collector configuration validator and start the disposable Redis Sentinel topology on Azure; correct the harness’s Docker-DNS startup race and record the incomplete primary-loss failover result without claiming high availability.
 - [x] Add a private-by-default Core deployment definition and a supervised durable dispatch process entry point; retain explicit gates for capacity, secrets, reverse proxy/TLS, Azure NSG, owner recovery access, and the missing Python aggregation-worker runtime.
-- [ ] Resize the VPS or split services before deploying the complete Core topology; the observed 891 MiB RAM baseline is not accepted for its private dependencies and future applications.
-- [ ] Deploy and validate services after Azure NSG restriction, owner recovery access, appropriate capacity, required secrets, and executable runtime entry points are verified.
+- [x] Verify the Azure VPS resize: 2 vCPUs, approximately 3.8 GiB RAM, 62 GiB disk, active 2 GiB swap, healthy Docker/Fail2ban/unattended-upgrades, and no running application containers.
+- [ ] Verify Azure NSG restriction, owner recovery access, required protected secrets, reverse proxy/TLS configuration, and the Python aggregation-worker runtime gate before starting Core services.
+- [ ] Deploy and validate eligible private Core services after all production gates are satisfied.
+
+## Azure Test-Environment CI/CD
+
+- [x] Define the automatic deployment boundary: Core-only, `main`-branch trigger after CI success, SSH transport, and public HTTPS for the test API only; keep database, Redis, workers, telemetry, and management ports private.
+- [x] Add reproducible host-side release scripts and a CI workflow that packages only committed Core source, validates it, and deploys atomically over SSH.
+- [x] Configure the protected `azure-test` repository deployment environment with host, user, host-key, and dedicated deployment-key secrets; keep Core runtime configuration separate on the VPS.
+- [x] Configure the Azure-assigned hostname, host firewall TCP 80/443, and automated TLS; the public test API is available at `https://nirog.koreacentral.cloudapp.azure.com`.
+- [x] Execute and observe a test deployment, including internal liveness/readiness and HTTPS health verification.
+- [x] Validate the `main`-triggered GitHub Actions release path: Core Quality Gates and the protected SSH deployment completed for commit `25c7073`; public liveness and private container state were verified.
+- [ ] Replace synthetic test configuration only after real protected storage/OIDC inputs, the Python aggregation-worker runtime, and workload-identity validation are implemented.

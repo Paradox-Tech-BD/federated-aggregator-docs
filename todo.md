@@ -228,3 +228,20 @@
 ### References
 
 [7] [Redis, Rate Limiter](https://redis.io/docs/latest/develop/use-cases/rate-limiter/)
+
+## Product-Core Phase 12 Provider-Verification Resolution
+
+- [x] Research bounded provider verification and retain the distinction between an observed object state and a sanitization/compliance conclusion.[8] [9]
+- [x] Add immutable resolution evidence for recovery-pending disposal with the only permitted outcome categories: `object_absent`, `object_present`, and `provider_unavailable`.
+- [x] Require platform-admin authorization, a bounded reference/digest, correlation evidence, and privileged-operation throttling; do not invoke storage, retry deletion, or reuse old approvals from the resolution path.
+- [x] Extend the portal only to recognize redacted verification lifecycle states; do not expose evidence references, provider responses, locators, versions, or a browser resolution control.
+- [x] Validate Core CI (43 TypeScript plus 4 Python tests), PostgreSQL migration/integration execution, and portal production build; commit/push Core and portal updates under the user Git identity.
+- [x] Record the chronology and checkpoint the documentation ledger.
+- [ ] Phase 13: Add attestation review/expiry policy, real multi-instance Redis-unavailable validation, and deployed Collector/backend/alert-receiver testing while retaining the no-automatic-retry rule.
+- [ ] Queue the matching Notion ledger update for retry after the unavailable connector/browser transport recovers.
+
+### References
+
+[8] [NIST SP 800-88 Rev. 2: Guidelines for Media Sanitization](https://csrc.nist.gov/pubs/sp/800/88/r2/final)
+
+[9] [OpenTelemetry Collector Configuration](https://opentelemetry.io/docs/collector/configuration/)

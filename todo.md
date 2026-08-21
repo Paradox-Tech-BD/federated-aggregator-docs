@@ -122,3 +122,11 @@
 - [x] Implement remote-JWKS OIDC verification, local principal hydration, separate workload vocabulary, controlled health/readiness, and a scoped federation read.
 - [x] Verify migration execution on PostgreSQL 16, transactional commit/rollback, OIDC claims, guard denial, HTTP behavior, and 17 test cases.
 - [x] Record the milestone in Notion and the public research chronology, then commit and push under the user Git identity.
+
+## Product-Core Phase 3 Descriptor-Only Artifact Intake
+
+- [x] Research and define direct-upload, SHA-256 integrity, generated-key, descriptor-only, and quarantine constraints.
+- [x] Implement S3-compatible presigned intent/storage contracts and additive PostgreSQL artifact, upload-intent, and verification/quarantine records.
+- [x] Implement local-membership/federation-scoped descriptor intent and storage-metadata verification workflows with atomic audit/outbox evidence.
+- [x] Verify PostgreSQL migration, integrity mismatch quarantine, descriptor-only HTTP behavior, authorization, storage signing, and 24 test cases.
+- [x] Record the milestone in the public research chronology and queue the Notion ledger record for retry after the connector timeout.

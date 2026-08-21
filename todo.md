@@ -164,3 +164,21 @@
 - [x] Verify Core CI (36 TypeScript plus 4 Python tests), PostgreSQL portal-read integration coverage, and portal production build; commit and push both private repositories with the user Git identity.
 - [x] Record the milestone in the public research chronology and checkpoint the documentation site.
 - [ ] Queue the matching Notion ledger update for retry after the unavailable connector/browser transport recovers.
+
+## Product-Core Phase 8 Observability and Controlled Disposal
+
+- [x] Research OpenTelemetry Collector resilience, endpoint-sensitive API resource controls, and media-sanitization boundaries to define a bounded control-plane hardening scope.[1] [2] [3]
+- [x] Add a best-effort OTLP metrics adapter, no-op default, explicit telemetry configuration, local Collector health/memory/batch pipelines, and allowlisted telemetry contract.
+- [x] Add per-principal operation-class privileged throttling before retry/dead-letter/disposal mutations, with HTTP 429 and `Retry-After` behavior for blocked commands.
+- [x] Add additive reviewed disposal request, distinct federation-owner approvals, platform-admin execution, version-aware storage adapter command, immutable outcomes, and retained governance/release/audit lineage.
+- [x] Validate full CI: formatting, lint, TypeScript, PostgreSQL migration/integration execution, 39 TypeScript tests, and 4 Python tests; build the portal and preserve its review-only disposal boundary until a safe Core summary exists.
+- [x] Commit/push Core and portal milestones under the user Git identity, record the public chronology, and checkpoint the documentation site.
+- [ ] Queue the matching Notion ledger update for retry after the unavailable connector/browser transport recovers.
+
+### References
+
+[1] [OpenTelemetry Collector Resiliency](https://opentelemetry.io/docs/collector/resiliency/)
+
+[2] [OWASP API4:2023 Unrestricted Resource Consumption](https://owasp.org/API-Security/editions/2023/en/0xa4-unrestricted-resource-consumption/)
+
+[3] [NIST SP 800-88 Rev. 2: Guidelines for Media Sanitization](https://doi.org/10.6028/NIST.SP.800-88r2)

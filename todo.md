@@ -291,4 +291,8 @@
 - [x] Define the hosted production boundary for the Core API, dispatch worker, Python ML worker, PostgreSQL, Redis/Sentinel, object storage integration, administrator portal, documentation mirror, and future project applications.
 - [x] Specify Azure Network Security Group ingress and egress rules using least privilege, including SSH source restriction, public TLS endpoints, private service ports, and managed-service dependencies.
 - [ ] Prepare a VPS bootstrap and deployment runbook covering a non-root operator account, SSH key-only access, firewall, container runtime, secrets, backups, TLS, monitoring, and recovery evidence.
-- [ ] Deploy and validate services only after the user provides a dedicated least-privilege SSH access path and confirms the selected Azure boundary.
+- [x] Receive initial Azure VPS SSH access for bootstrap; do not retain password-based administration after a key-only operator path is established.
+- [x] Complete the initial VPS bootstrap: key-based operator access, updated Ubuntu baseline, SSH-only host firewall, Fail2ban, unattended updates, Docker/Compose, bounded Docker logs, swap, and source staging.
+- [x] Run the Docker Collector configuration validator and start the disposable Redis Sentinel topology on Azure; correct the harness’s Docker-DNS startup race and record the incomplete primary-loss failover result without claiming high availability.
+- [ ] Resize the VPS or split services before deploying the complete Core topology; the observed 891 MiB RAM baseline is not accepted for its private dependencies and future applications.
+- [ ] Deploy and validate services after Azure NSG restriction, owner recovery access, appropriate capacity, required secrets, and executable runtime entry points are verified.

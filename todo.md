@@ -105,3 +105,12 @@
 - [x] Write the phased product-core implementation plan with modules, schema/migrations, APIs, worker contracts, tests, dependencies, acceptance criteria, and handoff sequence.
 - [x] Add the plan and identity decision to the documentation/Notion research ledgers.
 - [x] Verify, commit, push, and checkpoint the handoff documentation update under the user Git identity.
+
+## Product-Core Phase 0–1 Implementation Kickoff
+
+- [x] Create the private `paradox-tech-bd/federated-aggregator-core` repository with the user's Git identity and a clear Phase 0–1 README/ADR index.
+- [x] Establish pnpm and Python workspace roots, strict lint/type/format/testing configuration, local dependency definitions, CI, secret policy, and synthetic-fixture policy.
+- [x] Create framework-free TypeScript contracts, domain, application-port, test-kit, and configuration packages with enforced dependency direction.
+- [x] Implement local user, organization, membership, workload, federation, protocol, and round domain types/invariants with explicit OIDC/Clerk-ready and workload-identity ports.
+- [x] Create deterministic unit tests for membership authorization, workload separation, protocol immutability, and core round transition rules.
+- [x] Run all baseline quality gates, record the milestone in the research ledgers, then commit and push the implementation foundation under the user Git identity.

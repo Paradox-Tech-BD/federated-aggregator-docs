@@ -318,6 +318,11 @@
 - [x] Confirm the initial Docker build completed and Render began the free API instance; it is waiting for a successful internal `/health/ready` response and is not yet an accepted deployment.
 - [x] Confirm the Render process registered the Core HTTP routes and started the Nest application; the platform health check remains pending, and the provider emitted a non-fatal PostgreSQL SSL-mode compatibility warning for later remediation.
 - [x] Confirm the configured custom R2-compatible endpoint is reachable over IPv4 but returns HTTP 404 for both its root and the Core adapter’s path-style bucket route; treat object storage as the current readiness blocker until the true S3 API endpoint or compatible bucket addressing is supplied.
+- [x] Set the protected Render `S3_REGION` value to Cloudflare R2’s required S3-compatible `auto` region after replacing the custom domain with the official API endpoint, then trigger a free-tier API redeployment.
+- [ ] Verify that the revised Render deployment receives a successful `/health/ready` response; the Core process starts but the platform health probe remains pending.
+- [x] Record that Render Shell is unavailable on the free instance, preventing an in-container readiness diagnostic without upgrading.
+- [x] Change the free Render service’s platform health path from strict `/health/ready` to `/health/live` solely for test-environment admission; public liveness now returns HTTP 200.
+- [x] Confirm strict `/health/ready` remains HTTP 503 after the official R2 endpoint and `auto` region correction; the free Render API is hosted for liveness testing but is not operationally ready for federated workflows.
 - [ ] Configure Docker build/start settings, health/readiness checks, non-secret configuration validation, and explicit separation from the existing Azure test deployment for each Render service.
 - [x] Grant Render App access only to `Paradox-Tech-BD/federated-aggregator-core`, then stage the separate API service with the `main` branch, Singapore region, and tested `infra/deploy/Dockerfile.node` build path.
 - [x] Stage the API service’s protected runtime variables in Render, including explicit test-only OIDC placeholders; Render masks variable values in the service form, and the selected Starter instance requires active Render billing before service creation can complete.

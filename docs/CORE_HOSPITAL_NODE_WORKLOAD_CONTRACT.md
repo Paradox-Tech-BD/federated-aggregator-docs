@@ -1,6 +1,6 @@
 # Core — Hospital Node Workload Contract Design
 
-**Status:** Proposed additive Core design; no Core route, migration, or Azure integration is implemented by this document.  
+**Status:** Additive Core lease boundary implemented and bounded Azure lease proof validated; artifact capability and submission boundaries remain proposed.
 **Decision date:** 22 August 2026  
 **Depends on:** the public Hospital Node Agent dossier and the current Core artifact, workload-identity, aggregation, and audit boundaries.
 
@@ -142,7 +142,8 @@ The summary is an allowlisted object: completed local epochs, policy-approved co
 | Artifact | Intent binds assignment/lease; descriptor-only response; checksum/byte/manifest mismatch rejection; verified artifact required. |
 | Audit/outbox | Safe event schema/snapshot; no capability/URL/token/bytes; exactly one correlation path for accepted/rejected/incompatible results. |
 | Node/Core contract | Shared golden commands/submissions; fake Node adapter exercises capabilities and recovery; no new human-route use. |
-| Bounded Azure proof | One generated-tensor node, one `hospital_node` Keycloak client, one assigned test round, one descriptor-backed update, verified reconciliation, and immediate disable/teardown of any temporary service/credential profile. |
+| Bounded Azure lease proof | One separate `hospital-node-synthetic` client, one generated synthetic workload/assignment and canonical command, one guarded lease, descriptor-only response validation, and immediate assignment/lease expiry. |
+| Future artifact/submission Azure proof | Only after the relevant contracts, schema, authority, capability, and reconciliation tests exist: a verified descriptor intent and submission through the new node-only route, with no object locator, credential, bytes, or clinical data exposed. |
 
 ## 9. Delivery order and non-claims
 
@@ -196,6 +197,20 @@ The first endpoint proof will use one new **private Keycloak service client**, `
 
 The fixture will write only synthetic organization/federation/round metadata, a generated canonical command, digest/checksum/size descriptors, and allowlisted safe events. The profile must terminate after one expected lease response; the created assignment must be expired or otherwise made non-reusable immediately afterward, and the normal aggregation worker must remain default-disabled throughout. This proves audience separation, principal binding, canonical command retrieval, and idempotent lease behavior—not object transfer, training, update submission, clinical use, or a continuously operating hospital node.
 
+## 17. Implementation record — bounded Azure hospital-node lease proof
+
+Core commit `7d9218c` adds the deliberately opt-in `hospital-node-validation` Compose profile, a separate private `hospital-node-synthetic` Keycloak service client, an independent protected secret mount, and the one-shot `bounded-hospital-node-lease.mjs` runner. The normal deployment path does not start that profile. The client has the distinct `fedagg-hospital-node` audience and `hospital_node` workload claim; it does not reuse the ML-worker client, secret, audience, callback, or workload mapping. [5] [6]
+
+The protected Azure deployment completed successfully after Core Quality Gates passed in 1 minute 37 seconds. Before the proof, the private client-credentials check succeeded without revealing its token or secret. The profile then ran **once**. It created generated synthetic Core facts only, mapped the separate workload identity, persisted one canonical descriptor-only command and its Core-computed digest, and called only `POST /v1/workload-assignments/:assignmentId/lease`. The runner accepted the response only when the assignment and digest matched and when the serialized response contained neither `objectKey` nor `credential`; it printed the safe success outcome only. No human route, ML-worker callback, object transfer, model training, update submission, real node, or hospital data path was invoked.
+
+Post-run aggregate evidence recorded one expired synthetic assignment, zero active synthetic assignments, zero active synthetic leases, and one `bounded_validation_closed` safe event. The ephemeral runner was absent after completion, while Azure public liveness and readiness both returned HTTP 200. The aggregation worker remained configured as disabled and continued to log its default-disabled state. This is proof of a narrowly scoped Core lease boundary only; it is not a model-transfer, training, submission, reconciliation, hospital-integration, or clinical-use proof.
+
+## 18. Next documented delivery gate — bounded assignment-creation authority
+
+The next work is design-first, not a capability or submission implementation. The Core needs a narrowly privileged **synthetic assignment-creation authority** that can create an assignment only from eligible, already-frozen Core round and participant facts plus one Core-owned canonical command. It must not become a human self-service route, permit a node to select a round or training configuration, reuse the ML-worker identity, or create a general administrative bypass.
+
+Before any code for this gate, the ledger must define the authority principal, input boundary, frozen-fact checks, idempotency and audit rules, terminal/expiry behavior, and the exact tests that prove denial for human, `ml_worker`, stale, cross-organization, and non-frozen inputs. Only after that authority is accepted should the design progress to safe base-model read capability, update-intent creation, verified artifact reconciliation, and node-only update submission. The successful lease proof does not authorize those later boundaries.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)
@@ -205,3 +220,7 @@ The fixture will write only synthetic organization/federation/round metadata, a 
 [3] [Core workload identity port](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/application/src/ports/identity.ts)
 
 [4] [Core persistence schema](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/persistence-postgres/src/schema.ts)
+
+[5] [Bounded hospital-node lease runner](https://github.com/hstu-research/federated-aggregator-core/blob/main/infra/validation/bounded-hospital-node-lease.mjs)
+
+[6] [Core Compose validation profile](https://github.com/hstu-research/federated-aggregator-core/blob/main/infra/deploy/compose.core.yaml)

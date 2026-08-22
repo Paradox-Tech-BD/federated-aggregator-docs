@@ -27,7 +27,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
     <div className="ledger-shell">
       <aside className={`ledger-sidebar ${isOpen ? "mobile-open" : ""}`} aria-label="Documentation index">
         <Link href="/" className="brand-lockup" aria-label="Aggregator Ledger documentation home">
-          <span className="brand-glyph" aria-hidden="true"><i /><b /><em /></span>
+          <span className="brand-glyph" aria-hidden="true"><i /><i /><i /><b /></span>
           <span>
             <strong>AGGREGATOR</strong>
             <em>LEDGER</em>

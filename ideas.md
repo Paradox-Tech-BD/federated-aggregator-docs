@@ -59,3 +59,6 @@
 - Long research-log pages use visible chapter clusters so the chronology reads as an indexed archive rather than an undifferentiated feed.
 - Documentation chronology pages carry a slim right-side provenance margin with evidence language and state treatment, balancing the persistent left index rail.
 - The ledger mark and `AGGREGATOR / LEDGER` wordmark are rendered as a compact institutional archive signature, not as incidental navigation text.
+- The primary ledger mark uses three offset vertical rules intersected by one rising aggregation line; generic node-network motifs are reserved for explanatory diagrams only.
+- Every primary documentation route follows the reading-room structure with a persistent index, editorial document column, and visible provenance or evidence margin.
+- Repeating content groups use ruled ledger inserts, margin labels, and status stamps rather than generic rounded marketing cards; mineral teal remains an operational evidence signal.

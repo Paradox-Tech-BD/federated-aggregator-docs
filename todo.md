@@ -15,6 +15,14 @@
 - [x] Update local repository remotes, active source metadata, CI/CD and deployment documentation, Render source settings, and documentation links to make `hstu-research` authoritative. The Azure workflow remains repository-local, so no Azure source URL rewrite was required.
 - [x] Verify the transferred repository URLs, GitHub Actions visibility, Azure deployment source path, Core Quality Gates run 31, protected Azure deployment run 16, and the Render documentation build from `hstu-research/federated-aggregator-docs` commit `3a8e65b`; record the result in the public research chronology and publish a documentation checkpoint.
 
+## Bounded Aggregation Callback and Redis Resilience Evidence
+
+- [x] Read the current public decision ledger and Core contracts to define one synthetic federation, protocol, round, verified descriptor set, aggregation job, callback, and evidence query. Synthetic archive bytes remained worker-local/object-storage-only; no patient data, clinical images, credentials, bearer tokens, raw provider responses, or storage locators entered the ledger.
+- [x] Add the profile-gated `bounded-aggregation-validation` Azure harness and operator runbook. The runner creates synthetic control-plane records, dispatches one job through the real outbox path, waits for descriptor-only reconciliation, and emits only safe identifiers, lifecycle states, digests, checksum, and byte-size evidence.
+- [x] Temporarily set `AGGREGATION_WORKER_ENABLED=true` only for the bounded synthetic test, repair the missing private callback URL and non-root OIDC-secret handoff found during the first controlled attempt, verify the real worker result as `succeeded|candidate_ready|enqueued|accepted`, then immediately restore the default disabled gate and its explicit log state.
+- [x] Run a separate disposable Redis primary/two-replica/three-Sentinel fault-injection exercise. It observed primary loss and a final `subjectively_down` state but no promotion during the bounded window; the test topology was removed and the current direct-URL Core path remains explicitly non-Sentinel-aware.
+- [x] Record the bounded callback and Sentinel evidence in the public chronology, keep all secrets and raw provider responses out of the ledger, apply the indexed-archive presentation refinements, and publish a documentation checkpoint.
+
 ## Technical Requirements Analysis
 
 - [x] Inventory the earlier clean-room Node.js services, Python ML core, documentation product, tests, and contracts.

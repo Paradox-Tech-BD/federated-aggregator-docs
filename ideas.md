@@ -56,3 +56,6 @@
 - Documentation is the first product and must read like a living research record, not a marketing landing page.
 - The API reference uses mock/local safety states and visibly disables destructive calls in documentation mode.
 - Provisional research outcomes are preserved in place with explicit evidence stamps.
+- Long research-log pages use visible chapter clusters so the chronology reads as an indexed archive rather than an undifferentiated feed.
+- Documentation chronology pages carry a slim right-side provenance margin with evidence language and state treatment, balancing the persistent left index rail.
+- The ledger mark and `AGGREGATOR / LEDGER` wordmark are rendered as a compact institutional archive signature, not as incidental navigation text.

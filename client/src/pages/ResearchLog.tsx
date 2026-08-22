@@ -6,6 +6,7 @@ import { ArrowUpRight, CalendarDays, FileWarning, GitCommitHorizontal, Lightbulb
 import { StatusStamp } from "@/components/StatusStamp";
 
 const entries = [
+  { date: "22 AUG 2026", title: "One bounded worker callback accepted; Redis remains direct after non-promotion evidence", status: "VALIDATED" as const, icon: GitCommitHorizontal, body: "The private Azure test path has now completed one deliberately bounded, synthetic FedProx aggregation proof. Commits `e92b527`, `bba2dab`, and `98e3989` passed Core Quality Gates runs 32–34 and protected Azure deployments 17–19. The profile-gated runner created a synthetic federation, sealed round, two tiny worker-local parameter archives, verified descriptors, and one queue job; its first enablement exposed two configuration gaps—missing private callback URL and a non-root secret-read permission—which were repaired without widening public access or exposing the client secret. The existing dispatched synthetic job then completed through the real outbox, BullMQ worker, Keycloak client-credentials token, and authenticated descriptor-only callback. PostgreSQL recorded `succeeded|candidate_ready|enqueued|accepted`; the worker gate was immediately restored to its default disabled state, and Azure internal/public liveness and readiness returned HTTP 200. The separate primary/two-replica/three-Sentinel harness observed primary loss and a final `subjectively_down` state but no promotion during its bounded window; the topology was torn down, and the Core still uses a direct Redis URL rather than claiming Sentinel-aware failover." },
   { date: "22 AUG 2026", title: "Federated research portfolio moved to hstu-research", status: "VALIDATED" as const, icon: GitCommitHorizontal, body: "Repository ownership is now centralized under `hstu-research`: the private Core, public documentation ledger, private administrator portal, and private thesis research rebuild were transferred with their existing GitHub history and default branches. Local Core, portal, thesis, and the documentation workspace’s named GitHub remote now target the new organization; current source references and runbooks no longer name the former owner. Core Quality Gates run 31 and protected Azure deployment run 16 both completed successfully from `hstu-research/federated-aggregator-core`, confirming that the repository-local SSH release path remained intact. Render’s Core API source now identifies `hstu-research/federated-aggregator-core`; the documentation static site rebuilt successfully from `hstu-research/federated-aggregator-docs` commit `3a8e65b`. Azure remains the authoritative environment, while Render remains a backup path. Historical ledger dates are retained, but active instructions and deployment links use the new organization." },
   { date: "22 AUG 2026", title: "Private Azure workload identity verified; aggregation remains explicitly disabled", status: "VALIDATED" as const, icon: GitCommitHorizontal, body: "Azure remains the authoritative test control-plane environment. Core commit `d35bebc` completed Core Quality Gates run 30 and protected Azure deployment run 15 after the release path self-provisioned its protected test client-secret file, synchronized its activation helper, and corrected worker/bootstrap image packaging and a PostgreSQL bootstrap query type conflict. The private Keycloak service is healthy; its one-shot bootstrap acquired a client-credentials token and recorded an active local `ml_worker` mapping without exposing the subject, token, secret, raw model bytes, descriptors, or patient data. The aggregation worker starts only after that bootstrap succeeds, then logs its disabled state because `AGGREGATION_WORKER_ENABLED=false` remains the default. Public Azure liveness and readiness both returned HTTP 200. A bounded synthetic queue-and-callback exercise is the next required proof before any explicit worker enablement." },
   { date: "22 AUG 2026", title: "Azure authority retained; Render remains liveness-only and Redis stays direct", status: "VALIDATED" as const, icon: Lightbulb, body: "The operational hierarchy is now explicit: Azure owns the Core execution and release-control path, while the Render free API and Cloudflare-managed backup components remain non-primary continuity paths. Render liveness is publicly available, but strict readiness remains HTTP 503 because the object-storage dependency is not accepted as ready; it must not be used for workload dispatch, authority, or release state. The Azure Redis Sentinel revalidation also remains a negative result: Sentinels detected primary loss but recurring tilt and no-good-slave outcomes prevented a repeatable promotion. The test Core therefore continues to use a direct Redis URL until an isolated resilience pass produces stable failover evidence." },
@@ -41,12 +42,41 @@ const entries = [
   { date: "19 AUG 2026", title: "Legacy low-specificity / high-sensitivity result is retained as a diagnostic", status: "PROVISIONAL" as const, icon: FileWarning, body: "The pattern is not a thesis claim. It remains a debugging signal pending a corrected aggregation implementation, grouped data split, reproducible configuration, and independent metric recalculation." },
 ];
 
+const chapterMarkers: Readonly<Record<number, { label: string; title: string; note: string }>> = {
+  0: { label: "CURRENT RECORD", title: "Azure validation archive", note: "Bounded live proofs, release authority, and retained operational limits." },
+  4: { label: "DEPLOYMENT RECORD", title: "Hosting and infrastructure", note: "Public-edge boundaries, private dependencies, and repeatable environment evidence." },
+  12: { label: "GOVERNANCE RECORD", title: "Control-plane implementation", note: "Evidence-backed lifecycle controls, worker reconciliation, and constrained operations." },
+  30: { label: "FOUNDATION RECORD", title: "Architecture decisions", note: "The research and authority assumptions that shaped the Core before runtime execution." }
+};
+
+const evidenceLanguage = {
+  VALIDATED: "verified evidence",
+  PROVISIONAL: "uncertainty retained",
+  BLOCKED: "decision blocked"
+} as const;
+
 export default function ResearchLog() {
   return (
     <div className="doc-page research-page">
       <header className="doc-topbar"><p>12 / RESEARCH LOG</p><span className="topbar-meta"><CalendarDays size={15} />GMT+6 chronology</span></header>
       <section className="page-title"><p className="folio">12.0 / DECISIONS OVER TIME</p><h1>Keep the failed runs.<br /><i>They are evidence too.</i></h1><p>Every consequential change records its context, evidence, decision, consequence, status, and next action. The log is chronological by design.</p></section>
-      <section className="log-ledger">{entries.map((entry, index) => { const Icon = entry.icon; return <article className="log-entry" key={entry.title}><div className="log-marker"><span>{String(index + 1).padStart(2, "0")}</span></div><div className="log-date">{entry.date}</div><div className="log-content"><div className="log-title-row"><h2>{entry.title}</h2><StatusStamp status={entry.status} /></div><p>{entry.body}</p><a href="#open-decisions">Evidence and decision record <ArrowUpRight size={15} /></a></div><Icon className="log-icon" size={21} /></article>; })}</section>
+      <section className="log-ledger">
+        {entries.map((entry, index) => {
+          const Icon = entry.icon;
+          const chapter = chapterMarkers[index];
+          return (
+            <div className="ledger-record" key={entry.title}>
+              {chapter ? <div className="log-chapter"><span>{chapter.label}</span><div><h2>{chapter.title}</h2><p>{chapter.note}</p></div><small>INDEX / {String(index + 1).padStart(2, "0")}—{String(Math.min(index + 9, entries.length)).padStart(2, "0")}</small></div> : null}
+              <article className={`log-entry status-${entry.status.toLowerCase()}`}>
+                <div className="log-marker"><span>{String(index + 1).padStart(2, "0")}</span></div>
+                <div className="log-date">{entry.date}</div>
+                <div className="log-content"><div className="log-title-row"><h2>{entry.title}</h2><StatusStamp status={entry.status} /></div><p>{entry.body}</p><a href="#open-decisions">Evidence and decision record <ArrowUpRight size={15} /></a></div>
+                <aside className="log-evidence"><Icon size={20} /><span>{evidenceLanguage[entry.status]}</span><strong>{entry.status}</strong><small>chronology / {String(index + 1).padStart(2, "0")}</small></aside>
+              </article>
+            </div>
+          );
+        })}
+      </section>
       <section id="open-decisions" className="open-questions"><div><span>OPEN DECISION / 008</span><h2>Which normalization policy belongs in the production vision model?</h2></div><p>Before the actual vision architecture enters a federated round, document whether BatchNorm buffers are aggregated, retained locally, frozen, or replaced. The answer must be tested on that architecture, not inferred from the earlier MLP simulation.</p><StatusStamp status="BLOCKED" /></section>
     </div>
   );

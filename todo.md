@@ -55,6 +55,8 @@
 - [x] Increment I — Implement only the documented lease-bound, HospitalNodeAuthGuard-only descriptor receipt for base-model-read intent issuance plus its migration, redaction, atomicity, and guard tests. Core `d9b55fc` added migration `0013`, the guarded receipt route, domain/application/persistence/controller coverage, and 77 TypeScript plus 9 Python tests. Quality/deployment, Azure health, and disabled-worker checks passed; no runtime intent request occurred.
 - [x] Increment J0 — Publish the one-shot descriptor-intent issuance-and-expiry proof profile contract before implementation. It must use generated facts only, issue one intent through the guarded Core route, assert redaction, expire the intent/lease/assignment, append safe closure evidence, and never contact storage or enable the aggregation worker.
 - [ ] Increment J1 — Implement and deploy the documented opt-in descriptor-intent proof profile/runner. Do not execute it in Azure until its own quality/deployment and current health/default-disabled-worker checks pass.
+- [x] Increment J1a — Record the pre-route duplicate-workload discovery and correction: the existing separate synthetic workload mapping must be reused rather than duplicated. The initial profile transaction rolled back before any guarded request or read-intent write.
+- [ ] Increment J1b — Implement, quality-check, and deploy the mapping-reuse correction; then perform one corrected validation only after renewed health/default-disabled-worker checks.
 
 ## Technical Requirements Analysis
 

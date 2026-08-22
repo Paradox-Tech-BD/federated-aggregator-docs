@@ -37,7 +37,7 @@ The repository begins with strict formatter, linter, TypeScript, Python type/tes
 | 2 | Python ML core with tiny tensors. | `μ=0` baseline; `μ>0` proximal penalty; invalid tensor/checkpoint rejection. | Cross-language fixture digests match. |
 | 3 | SQLite local state and redacted status projection. | Migration, crash/restart, append-only event, redaction snapshot. | Restart cannot duplicate successful run. **Persistence portion implemented at `2468f4b`; local status/redaction projection remains open.** |
 | 4 | Fake Core/storage/token adapters and execute-assignment use case. | Expiry, wrong scope, checksum, retry classification. | Bytes never enter Node API or database. **Implemented with in-process fakes at `deee8a6` and `1dcff80`; no HTTP client or automatic retry is implied.** |
-| 5 | Local localhost status service and Compose simulated node. | End-to-end synthetic assignment to accepted fake submission. | No public listener by default. |
+| 5 | Local localhost status service and Compose simulated node. | End-to-end synthetic assignment to accepted fake submission. | No public listener by default. **Status endpoint and static Compose profile implemented at `e11d661`; direct loopback proof passed, but Docker runtime execution remains unavailable in this sandbox.** |
 | 6 | Core workload-contract proposal implementation, then Azure synthetic integration. | Contract/e2e against private Core test routes. | One synthetic node result accepted by Core. |
 
 ## 4. Interfaces to implement first

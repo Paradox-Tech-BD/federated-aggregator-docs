@@ -33,6 +33,10 @@ The first persistence increment is deliberately narrower than a deployed node se
 
 Commits `deee8a6` and `1dcff80` complete the next in-memory adapter boundary. A scoped capability guard requires exact assignment and read/write operation plus an unexpired lease. `FakeScopedObjectStore` accepts a generated update only after that capability check and a constant-time SHA-256 checksum match; it returns a descriptor only and carries neither URL, object key, credential, remote request, nor persisted byte record. `FakeWorkloadTokenSource` returns a synthetic token from process memory only when audience and expiry match. Remote outcomes are classified as accepted, retryable (`temporary_unavailable` or `transport_timeout`), or terminal (`deadline_closed`, invalid descriptor, forbidden scope); classification is evidence only and does not automatically resubmit. Hospital Node Quality Gates #3 and #4 each passed remotely, with the final suite containing ten TypeScript tests and four Python ML tests.
 
+### Implemented local-status and simulation evidence
+
+Commit `e11d661` adds `GET /status` only to an opt-in synthetic status listener. It is disabled by default; ordinary execution binds to `127.0.0.1`, while `0.0.0.0` is permitted solely when the explicit Compose-test flag is set and the Compose profile maps it back to `127.0.0.1` on the host. The fixed JSON projection contains only service mode, exposure class, Core-integration status, and the statement that local data is not exposed. It contains no run identifiers, filesystem path, capability, token, object descriptor, dataset metadata, raw event, or provider response. The service test opens an ephemeral loopback port and confirms the exact response; Quality Gates #5 passed remotely in 20 seconds. Docker is unavailable in the current sandbox, so the Dockerfile and Compose profile are static, reviewed test artifacts rather than executed-container evidence.
+
 ### Rules
 
 | Rule | Enforcement |

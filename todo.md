@@ -31,6 +31,7 @@
 - [x] Create `hstu-research/federated-aggregator-hospital-node`, establish its tested synthetic baseline at `cfcf1dc`, and retain integration exclusively through the Core’s proposed descriptor, command, and workload-identity boundaries.
 - [x] Add restart-safe local SQLite run state at `2468f4b` with unique assignment/idempotency identity, append-only event labels, terminal-run recovery, and in-process fake Core adapters; Hospital Node Quality Gates #2 passed in 18 seconds. No local status route, data path, token, object locator, artifact byte, patient field, or Core network integration was added.
 - [x] Add in-memory scoped capability, checksum, token, remote-outcome, and fake storage guards at `deee8a6` and `1dcff80`; Hospital Node Quality Gates #3 and #4 passed. The work proves only synthetic contract behavior—no Azure/Core call, capability URL, automatic retry, persistent credential, raw byte API, or hospital data path was introduced.
+- [x] Add the opt-in localhost-only synthetic status read and static Compose test profile at `e11d661`; Quality Gates #5 passed in 20 seconds. The direct loopback response is tested; Docker is unavailable in this sandbox, so no container runtime proof or public deployment is claimed.
 - [ ] Validate the initial slice against the Core test environment, record decisions and evidence in the public ledger, and continue autonomously to the next documented delivery gate.
 
 ## Technical Requirements Analysis

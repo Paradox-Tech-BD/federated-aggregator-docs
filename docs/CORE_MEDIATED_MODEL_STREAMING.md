@@ -186,6 +186,22 @@ The bounded validation profile must use a generated non-clinical fixture whose e
 
 Implementation must stop after each slice, publish ledger evidence, and begin the next slice only from the published contract. If any stream path forces a storage locator, provider credential, object response, payload byte, raw header, or patient/local-data field into a public boundary, the slice fails closed and must be redesigned before proceeding.
 
+## 9. Implementation record and bounded proof-profile contract
+
+Core commit `d3516e4` implements the reviewed stream boundary. It adds migration `0014`, `issued → streaming → consumed` / aborted intent vocabulary, private stream-session and scalar-safe stream-event tables, an internal `openVerifiedRead` storage operation, a stream authorization service/repository, and `GET /v1/workload-assignments/:assignmentId/base-model-stream?intentId=` behind `HospitalNodeAuthGuard`. The route rejects `Range`, sets full-body/no-store/nosniff/attachment headers, derives workload identity only from the verified principal, and serializes no storage metadata. Local full quality passed with **83 TypeScript tests and 9 Python tests**; Core Quality Gates completed in **1 minute 55 seconds** and protected Azure deployment completed in **2 minutes 46 seconds**. Azure liveness/readiness returned HTTP 200 and the aggregation worker remained disabled. No stream endpoint was invoked in Azure by this implementation increment.
+
+The next runner is an opt-in profile named `hospital-node-base-model-stream-validation`. It reuses—not duplicates—the existing separate synthetic hospital-node workload mapping and protected client-secret reference. It may use Core-private setup access to write one tiny generated non-clinical fixture into the configured object store and to create generated Core prerequisite rows. That internal setup locator and its provider configuration are never printed, returned, committed, or included in public evidence. The Hospital Node simulation receives no storage configuration, URL, credential, locator, or object identity.
+
+| Proof step | Required bounded behavior | Forbidden behavior |
+|---|---|---|
+| Fixture setup | Create one tiny generated binary fixture, verified `base_model_archive` artifact row, descriptor, leased assignment, and issued descriptor-only intent. | Real model, patient/image/data field, real hospital record, bucket/object details in output, or Agent source change. |
+| Identity | Obtain one token through the existing `hospital-node-synthetic` client and reuse its active workload mapping. | ML-worker identity, human endpoint, duplicate workload identity, token/secret output, or a public service. |
+| Stream | Call the guarded Core stream route once, read its binary response only in the private runner, and compare observed byte count/checksum with generated expected facts. | Range request, redirect, direct provider request by node, presigned URL, storage credential, byte/payload output, training, update, submission, dispatch, or aggregation. |
+| Redaction | Confirm no response header/body projection contains object key/version, bucket, URL, credential, provider response, or local path. | Logging raw headers/body or treating a successful stream as training success. |
+| Closure | Confirm one completed stream session, consumed intent, expired generated lease/assignment, closure event, fixture-object cleanup, zero remaining runner instances, healthy Core, and disabled worker. | Active proof state, repeated stream call, worker enablement, or a claim of object-provider/hospital readiness. |
+
+The profile invocation must use an explicit Compose file and `run --build`, following the documented stale-image correction from the prior intent proof. It must not start until the profile source itself passes Core Quality Gates and protected Azure deployment, followed by renewed health and disabled-worker checks. A failure after a guarded stream request must be recorded and reviewed before another invocation.
+
 ## References
 
 [1] [NIST SP 800-207: Zero Trust Architecture](https://csrc.nist.gov/pubs/sp/800/207/final)
@@ -197,3 +213,5 @@ Implementation must stop after each slice, publish ledger evidence, and begin th
 [4] [Current Core ArtifactStorage port](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/application/src/ports/artifact-storage.ts)
 
 [5] [Current Core S3 adapter](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/storage-s3/src/index.ts)
+
+[6] [Core-mediated stream implementation](https://github.com/hstu-research/federated-aggregator-core/tree/main/apps/api/src/hospital-node-assignments)

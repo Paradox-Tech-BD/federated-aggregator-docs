@@ -62,10 +62,12 @@
 - [x] Increment J2 — Publish the next Core-mediated model-stream authorization design gate and its no-locator/no-credential/no-transfer-before-proof constraints.
 - [x] Increment J3 — Produce the full requirements, schema, workflow, architecture, engineering-standard, API, and implementation-handoff dossier for Core-mediated generated-model streaming before any stream endpoint, Agent download, or local training integration is implemented.
 - [x] Increment K1 — Publish the complete Core-mediated generated-model streaming dossier: nontechnical and technical requirements, data/schema, workflow, architecture, engineering rules, API contract, test plan, and implementation handoff.
-- [ ] Increment K2 — Implement only the reviewed Core-mediated stream boundary for a generated non-clinical fixture, retaining no storage locator/credential disclosure, no Agent integration, no training, no update/submission, and no worker enablement.
-- [ ] Increment K3 — Pass Core quality gates and protected Azure deployment, then verify liveness/readiness and the default-disabled aggregation worker before any bounded stream execution.
+- [x] Increment K2 — Implement only the reviewed Core-mediated stream boundary for a generated non-clinical fixture, retaining no storage locator/credential disclosure, no Agent integration, no training, no update/submission, and no worker enablement. Core `d3516e4` added the guarded full-body route, private adapter/repository/session state, migration `0014`, and 83 TypeScript plus 9 Python tests.
+- [x] Increment K3 — Pass Core quality gates and protected Azure deployment, then verify liveness/readiness and the default-disabled aggregation worker before any bounded stream execution. Quality passed in 1 minute 55 seconds; protected Azure deployment passed in 2 minutes 46 seconds; Azure health remained HTTP 200 and the worker remained disabled.
 - [ ] Increment K4 — Run one generated-fixture stream proof, record only safe aggregate evidence, close the intent, and confirm no runner or active proof state remains.
 - [ ] Increment K5 — Publish the evidence and document the next safe boundary before connecting any Agent download or local training flow.
+- [x] Increment K2a — Record deployment evidence for the reviewed Core-mediated stream boundary and publish the exact generated-fixture profile contract before writing a runner.
+- [ ] Increment K2b — Implement and deploy the isolated stream validation profile/runner. It must upload only a generated non-clinical fixture through Core-owned setup, call the node-only stream route once, verify hash/length/redaction, close all proof state, and never expose storage credentials or locators.
 
 ## Technical Requirements Analysis
 

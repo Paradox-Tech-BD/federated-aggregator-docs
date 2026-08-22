@@ -184,6 +184,12 @@ The implemented Core protocol-version table currently contains the algorithm, ar
 
 The new payload is strictly the `hospital-node-command/v1` value already validated by the Agent: assignment/correlation/federation/round IDs; expiry; algorithm/proximal coefficient/local epochs/model and preprocessing digests; and base-model checksum/byte size. It must exclude a provider URL, object key, credential, model byte, local data information, path, free text, or patient field. Core calculates the stored digest from that canonical payload at assignment creation and a lease route later returns the stored payload only after the existing assignment/participant/workload checks pass. This is an additive assignment column plus creation-policy work; it does not authorize a human route to hand-craft commands or allow a node to change any command field.
 
+## 15. Implementation record — guarded lease endpoint
+
+Core commit `0fd4e4b` adds the first dedicated hospital-node HTTP route: `POST /v1/workload-assignments/:assignmentId/lease`. It is guarded only by `HospitalNodeAuthGuard`, reads the workload ID from the verified workload principal rather than the request body, requires a UUID idempotency key, and delegates to the existing assignment/lease policy. Its successful response is deliberately limited to a lease receipt plus the already persisted canonical `hospital-node-command/v1` payload. It cannot return an object locator, provider URL, capability, credential, model byte, local data reference, or free-form diagnostic.
+
+The controller test proves principal-derived workload binding and checks that the response serialization has neither `objectKey` nor `credential`. Full local CI passed with 50 TypeScript tests and 9 Python tests, including migration/integration execution. Core Quality Gates completed successfully in 1 minute 38 seconds; the protected Azure deployment completed successfully in 2 minutes 44 seconds for `0fd4e4b853fc46fa6afc3ef33a2ba8835e208c2f`; and public liveness/readiness returned HTTP 200. The route was not invoked against Azure because no hospital-node Keycloak client or pre-created assignment exists yet. There is still no assignment-creation route, Keycloak node client, base-model/update capability, artifact transfer, update submission/reconciliation route, real node connection, hospital data, or worker-gate change.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)

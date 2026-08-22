@@ -284,6 +284,29 @@ The new application port will expose a create method separate from the current l
 
 The next code change may implement only these described domain, application, port, Postgres, and tests. Any capability, transfer, update intent, verification, submission, or new Azure execution must begin with its own design record.
 
+## 20. Implementation record — private synthetic assignment authority
+
+Core commit `a0f423b` implements Increment A without adding a controller, route, guard exception, OIDC client, profile invocation, migration, or runtime worker change. It adds a framework-free `SyntheticHospitalNodeAssignmentCreationService`, a separate repository port, an explicit domain eligibility policy, and a Postgres adapter extension. The service has no principal parameter and is not registered as an API provider; only a future private validation composition may instantiate it.
+
+The service loads persisted workload, participant, round, and protocol facts; requires active `hospital_node` and participant state, same organization/federation binding, an open round, and algorithm/identifier/expiry/descriptor consistency; calculates the canonical command digest itself; and creates only an initial `assigned` receipt. The adapter atomically writes one assignment, one one-to-one canonical command record, and one scalar-safe `assignment_created` event. An exact assignment-UUID replay returns the existing receipt only when every immutable fact and canonical command match; a changed replay or a second assignment for the same `(round, workload)` fails. No storage locator, capability, credential, token, bytes, data field, path, free-text diagnostic, lease, outbox event, dispatch, or submission is written.
+
+Local quality passed with 60 TypeScript tests and 9 Python tests, including four domain-eligibility tests, three application-service tests, and three migrated PostgreSQL creation tests in addition to existing regression coverage. GitHub Core Quality Gates completed successfully in 1 minute 41 seconds, and the protected Azure deployment completed successfully in 3 minutes 1 second. The deployed release returned public liveness/readiness HTTP 200, while the aggregation worker remained configured as disabled and logged its default-disabled state. No profile was run for this increment, so this is deployment evidence for the code boundary—not proof of a new assignment-creation execution.
+
+## 21. Next documented delivery gate — bounded creation-only composition proof
+
+The next increment must prove that the private service is composed and used by a controlled generated-fixture workflow before any model-read capability design begins. The current lease runner used direct SQL to build its synthetic assignment fixture because the authority did not yet exist. A **new creation-only validation runner** must instead seed only the already-established generated prerequisite facts, invoke `SyntheticHospitalNodeAssignmentCreationService` for the assignment/command/event write, assert the descriptor-only receipt and exact-replay behavior, expire the fixture, and append a single scalar-safe closure event.
+
+This runner must be a new opt-in Compose profile with no public port, no human endpoint, no hospital-node token requirement, no ML-worker identity, no aggregation-worker enablement, no object storage, and no lease call. It may depend on migrated PostgreSQL but it must not be a normal deployment dependency or a daemon. Its safe output must say only whether the private creation authority accepted the generated facts, persisted one immutable assigned record and one command/event, recovered an exact replay, and closed the assignment. No record IDs, command body, token, secret, provider response, database URL, object locator, bytes, or local path may be emitted.
+
+| Required proof step | Allowed evidence | Must remain absent |
+|---|---|---|
+| Generated prerequisites | Safe count/category that Core-side generated facts were seeded. | Any hospital, patient, image, path, dataset, or clinical field. |
+| Service composition | Safe assertion that the private application service calculated the canonical digest and returned `assigned`. | Direct assignment insert for the created record, HTTP request, OIDC token, or a human principal. |
+| Exact replay | One safe statement that replay returned the same descriptor-only receipt. | A second assignment/command/event, a new lease, or changed command acceptance. |
+| Closure | Aggregate terminal state and one safe closure event. | Active assignment, active lease, capability, transfer, submission, job, or worker enablement. |
+
+The runner, Compose profile, tests, and its bounded Azure execution require their own implementation record. Only after this creation-only proof is complete should the next design consider a time-bounded base-model read capability.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)
@@ -299,3 +322,5 @@ The next code change may implement only these described domain, application, por
 [6] [Core Compose validation profile](https://github.com/hstu-research/federated-aggregator-core/blob/main/infra/deploy/compose.core.yaml)
 
 [7] [Current Postgres hospital-node assignment repository](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/persistence-postgres/src/hospital-node-assignment-repository.ts)
+
+[8] [Private assignment-creation application service](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/application/src/hospital-node-assignment-creation-service.ts)

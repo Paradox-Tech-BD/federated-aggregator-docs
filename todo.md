@@ -42,6 +42,10 @@
 - [x] Design the bounded endpoint proof before configuration: a distinct private `hospital-node-synthetic` OIDC client/secret/audience/claim, opt-in Core-network profile, generated synthetic assignment/command, one lease call, and immediate fixture non-reuse. ML-worker identity and aggregation-worker activation remain prohibited.
 - [x] Validate the initial slice against the Core test environment and record the bounded lease evidence in the public ledger: Core `7d9218c` deployed successfully; the separate private synthetic client acquired a token; one generated assignment received one descriptor-only lease; the fixture closed as one expired assignment, zero active assignments/leases, and one safe closure event; Azure liveness/readiness remained HTTP 200 and the aggregation worker stayed disabled.
 - [ ] Document the next Core gate before implementation: a narrowly privileged synthetic assignment-creation authority, including frozen-fact eligibility, idempotency, audit, expiry, and denial tests. Do not implement model-read capability, update intent, artifact transfer, or submission until that design is accepted.
+- [x] Increment A — Publish the assignment-creation authority contract: explicit principal, input shape, frozen-fact source, canonical-command ownership, idempotency, safe event/outbox evidence, expiry/terminal handling, and denial matrix.
+- [ ] Increment B — Implement only the documented synthetic assignment-creation authority with deterministic domain/application/persistence tests; retain every human route, ML-worker identity, artifact capability, transfer, training, and submission path as unavailable.
+- [ ] Increment C — Pass Core quality gates and protected Azure deployment; verify liveness/readiness and the default-disabled aggregation worker before any bounded runtime exercise.
+- [ ] Increment D — Record deployment evidence and define the next safe boundary before any new implementation work.
 
 ## Technical Requirements Analysis
 

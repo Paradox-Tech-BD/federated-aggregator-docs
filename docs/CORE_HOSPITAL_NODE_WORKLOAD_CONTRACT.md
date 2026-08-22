@@ -211,6 +211,79 @@ The next work is design-first, not a capability or submission implementation. Th
 
 Before any code for this gate, the ledger must define the authority principal, input boundary, frozen-fact checks, idempotency and audit rules, terminal/expiry behavior, and the exact tests that prove denial for human, `ml_worker`, stale, cross-organization, and non-frozen inputs. Only after that authority is accepted should the design progress to safe base-model read capability, update-intent creation, verified artifact reconciliation, and node-only update submission. The successful lease proof does not authorize those later boundaries.
 
+## 19. Increment A design — synthetic assignment-creation authority
+
+### 19.1 Scope and authority boundary
+
+This increment creates **no HTTP endpoint** and grants no human, hospital-node, or ML-worker principal the power to create an assignment. The authority is a private Core application service used only by a profile-gated, generated-fixture validation workflow. Its caller is a trusted Core process, not an OIDC subject. The service may create one initial `assigned` record from already persisted, generated Core facts and one Core-owned `hospital-node-command/v1` envelope; it cannot lease, issue a capability, transfer an object, train, submit an update, dispatch aggregation, or release a model.
+
+> A synthetic creation authority is a bounded test-control capability, not a participant-facing API and not a general administrative bypass.
+
+| Decision | Increment A rule | Explicit denial |
+|---|---|---|
+| Caller | Private synthetic-validation workflow invokes the application service directly. | Every browser, human API, hospital-node token, ML-worker token, callback, queue consumer, or public route. |
+| Authority input | One UUID assignment identity, one UUID correlation identity, one existing participant/round/workload relationship, one future deadline, and one descriptor-only command. | Node-selected round, organization, algorithm, local epoch count, base-model locator, local path, bytes, free text, credential, or patient field. |
+| Initial state | Persist exactly `assigned`; the existing lease service remains the only path to `leased`. | Direct creation of a lease, update authorization, submission, acceptance, or terminal success. |
+| Evidence | Append one scalar-safe `assignment_created` hospital-node event in the same database transaction. No dispatch occurs, so this increment creates no outbox event. | Raw request payload, token, storage capability, URL, locator, bytes, environment details, or a fabricated operational audit trail. |
+| Runtime | Source and tests deploy with the ordinary Core release; the authority executes only when a future explicit validation profile is enabled. | Re-running the completed lease proof, enabling the aggregation worker, or leaving a continuously active creation service. |
+
+### 19.2 Required inputs and frozen-fact checks
+
+The application service receives a fully specified `CreateSyntheticHospitalNodeAssignment` value from the private workflow. It reconstructs no clinical configuration and accepts no arbitrary JSON. Before repository mutation, it must load and verify that the existing workload is active and `hospital_node`; the active federation participant references that same workload and organization; the participant belongs to the supplied federation; the round belongs to that federation, is `open`, and references an existing protocol version; and the command names the same assignment, correlation, federation, round, and exact future deadline.
+
+The command stays Core-owned: the service calculates `hospitalNodeCommandDigest(command)` itself and persists that result. Its algorithm must equal the round protocol algorithm, and its expiry must equal the assignment deadline. The source must reject a malformed schema version, non-positive base-model byte size, non-future expiry, mismatched identifiers, changed digest, inactive/suspended/revoked workload or participant, non-`hospital_node` workload, cross-federation round, or a non-open round. Protocol fields not currently represented in the Core protocol-version record remain fixed generated fixture facts in this increment; no human or node may supply them.
+
+### 19.3 Persistence, replay, and terminal behavior
+
+No schema migration is required for this increment. The current `hospital_node_assignments` primary key, `(round_id, workload_id)` uniqueness rule, one-to-one `hospital_node_commands` record, and append-only `hospital_node_events` table are sufficient. The repository must perform all of the following atomically: check context; calculate/compare the canonical command digest; insert the assignment with state `assigned`; insert exactly one matching command record; and append one `assignment_created` event with a scalar-safe source label such as `synthetic_validation`.
+
+Creation replay identity is the Core-generated assignment UUID. A retried call with the same UUID must return the existing safe assignment receipt only if workload, participant, round, correlation, deadline, command, and canonical digest all match exactly. A changed replay must fail. A different UUID for the same `(round, workload)` must fail the existing unique boundary. This increment does not expire assignments automatically; the existing bounded validation teardown or a later explicit lifecycle job remains responsible for terminal expiry. No creation call can resurrect a terminal assignment.
+
+```mermaid
+sequenceDiagram
+  participant V as Private validation profile
+  participant S as Creation application service
+  participant R as Assignment repository
+  participant D as PostgreSQL
+
+  V->>S: generated IDs + existing facts + command
+  S->>S: validate context, deadline, identifiers, algorithm, digest
+  S->>R: create only initial assignment
+  R->>D: transaction: assignment + command + safe event
+  alt exact replay
+    D-->>R: existing immutable receipt
+  else new eligible assignment
+    D-->>R: persisted assigned receipt
+  else mismatch or duplicate scope
+    D-->>R: deny without mutation
+  end
+  R-->>S: descriptor-only assignment receipt
+  S-->>V: no lease, capability, object, bytes, or token
+```
+
+### 19.4 Application and persistence surface
+
+The new application port will expose a create method separate from the current lease method. Its safe result contains assignment ID, participant ID, workload ID, round ID, correlation ID, command digest, deadline, and `assigned` state only. It does not return the command body to the caller unless a later workflow requires it; lease remains the command-disclosure boundary. The Postgres adapter will extend the existing assignment repository rather than create a parallel data path, preserving the current canonical-command verification performed during a lease. [7]
+
+| Layer | Additive responsibility | Must not do |
+|---|---|---|
+| Domain | Validate initial-state eligibility and immutable command-to-context consistency. | Know SQL, OIDC, HTTP, storage, or generated data content. |
+| Application | Coordinate time, canonical digest, context validation, safe replay semantics, and repository call. | Accept a human principal, dispatch work, or widen the lease service. |
+| Postgres adapter | Atomically persist assignment, command, and scalar-safe event; return a receipt or exact replay. | Store URLs, credentials, object keys, bytes, local path/data fields, or arbitrary diagnostics. |
+| Validation profile | Generate the synthetic prerequisite facts and call the service only when explicitly enabled. | Become a daemon, public client, normal deployment dependency, or evidence of hospital operation. |
+
+### 19.5 Required tests and acceptance evidence
+
+| Test layer | Required evidence |
+|---|---|
+| Domain unit | Reject wrong workload kind/status, participant status, non-open/cross-federation round, identifier mismatch, past deadline, non-positive size, algorithm mismatch, and any attempt to begin outside `assigned`. |
+| Application unit | Prove Core-calculated canonical digest, exact replay return, changed-replay refusal, and that creation returns a safe receipt without invoking lease, capability, dispatch, or submission behavior. |
+| PostgreSQL integration | Prove atomic insertion of one assignment, one command, and one safe event; exact replay produces no duplicate rows; competing assignment for `(round, workload)` fails; mismatch rolls back all writes. |
+| Regression | Preserve existing lease behavior: only an authenticated active hospital-node workload can transition the newly created record from `assigned` to `leased`; `ml_worker` and human routes remain denied. |
+| Deployment | Pass Core Quality Gates and the protected Azure release; verify liveness/readiness HTTP 200 and the default-disabled aggregation-worker log. No runtime profile is invoked as part of this increment. |
+
+The next code change may implement only these described domain, application, port, Postgres, and tests. Any capability, transfer, update intent, verification, submission, or new Azure execution must begin with its own design record.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)
@@ -224,3 +297,5 @@ Before any code for this gate, the ledger must define the authority principal, i
 [5] [Bounded hospital-node lease runner](https://github.com/hstu-research/federated-aggregator-core/blob/main/infra/validation/bounded-hospital-node-lease.mjs)
 
 [6] [Core Compose validation profile](https://github.com/hstu-research/federated-aggregator-core/blob/main/infra/deploy/compose.core.yaml)
+
+[7] [Current Postgres hospital-node assignment repository](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/persistence-postgres/src/hospital-node-assignment-repository.ts)

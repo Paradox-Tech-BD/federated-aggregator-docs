@@ -16,6 +16,7 @@ const navItems = [
   { href: "/data-management", label: "Data management", index: "07", icon: Database },
   { href: "/api", label: "API reference", index: "08", icon: Braces },
   { href: "/implementation-plan", label: "Implementation handoff", index: "09", icon: ListChecks },
+  { href: "/hospital-node", label: "Hospital node agent", index: "10", icon: ShieldCheck },
 ];
 
 export function DocsShell({ children }: { children: React.ReactNode }) {

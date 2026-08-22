@@ -23,6 +23,15 @@
 - [x] Run a separate disposable Redis primary/two-replica/three-Sentinel fault-injection exercise. It observed primary loss and a final `subjectively_down` state but no promotion during the bounded window; the test topology was removed and the current direct-URL Core path remains explicitly non-Sentinel-aware.
 - [x] Record the bounded callback and Sentinel evidence in the public chronology, keep all secrets and raw provider responses out of the ledger, apply the indexed-archive presentation refinements, and publish a documentation checkpoint.
 
+## Next Federated System: Documentation-First Autonomous Delivery
+
+- [x] Review the completed Core ledger, existing administrator portal, thesis materials, and supplied research sources to select the separate Hospital Node Agent boundary without duplicating the Core control plane.
+- [x] Publish an in-depth non-technical requirements analysis covering users, hospital operating model, research value, clinical-data boundary, governance, risks, and measurable outcomes for the Hospital Node Agent.
+- [x] Publish the matching technical requirements analysis, logical schema, lifecycle and exception flows, system architecture, modular engineering standards, workflow design, proposed workload API contract reference, and AI-ready implementation handoff.
+- [x] Create `hstu-research/federated-aggregator-hospital-node`, establish its tested synthetic baseline at `cfcf1dc`, and retain integration exclusively through the Core’s proposed descriptor, command, and workload-identity boundaries.
+- [x] Add restart-safe local SQLite run state at `2468f4b` with unique assignment/idempotency identity, append-only event labels, terminal-run recovery, and in-process fake Core adapters; Hospital Node Quality Gates #2 passed in 18 seconds. No local status route, data path, token, object locator, artifact byte, patient field, or Core network integration was added.
+- [ ] Validate the initial slice against the Core test environment, record decisions and evidence in the public ledger, and continue autonomously to the next documented delivery gate.
+
 ## Technical Requirements Analysis
 
 - [x] Inventory the earlier clean-room Node.js services, Python ML core, documentation product, tests, and contracts.

@@ -1,0 +1,12 @@
+# Hospital Node Agent — Research Sources and Interpretation Notes
+
+This source ledger distinguishes externally supported design premises from project-specific implementation decisions. The Node Agent does not claim that any cited platform, method, or paper provides clinical validation for this project.
+
+| Source | Supported premise | Application to this project | Boundary |
+|---|---|---|---|
+| [Thesis FedProx methodology](https://github.com/hstu-research/thesis_breast_cancer/blob/main/result/fedprox-result/paper_sections/methodology.md) | The study uses three heterogeneous simulated sites, local epochs, a model contract, and FedProx proximal regularization. | Local trainer must execute the frozen local optimization recipe rather than reimplement server aggregation. | Metrics remain hypotheses until independently re-evaluated. |
+| [Li et al., 2020](https://proceedings.mlsys.org/paper_files/paper/2020/file/38af86134b65d0f10fe33d30dd76442e-Paper.pdf) | FedProx addresses systems/statistical heterogeneity by adding a proximal local objective. | `μ` is a protocol input to local training; `μ=0` remains FedAvg-compatible. | It does not authorize data sharing or guarantee privacy. |
+| [Zhang et al., 2024](https://pmc.ncbi.nlm.nih.gov/articles/PMC11240178/) | Healthcare FL faces local imbalance, non-standardization, limited compute, communication cost, and reproducibility challenges. | Require local preflight, bounded resources, explicit provenance, and no automatic quality claim. | The article is research guidance, not a deployment certification. |
+| [Topaloglu et al., 2021](https://pmc.ncbi.nlm.nih.gov/articles/PMC8528445/) | Local data retention does not eliminate model-update privacy risk. | Minimize transmitted fields and label privacy controls honestly. | Differential privacy and secure aggregation remain future protocol work. |
+| [Elwes et al., 2026](https://pmc.ncbi.nlm.nih.gov/articles/PMC13195871/) | Medical FL reproducibility requires traceability of data, methods, and experiments. | Store local-only reproducibility fingerprints and export redacted evidence. | No DataLad/MetaLad adoption is implied in v1. |
+| [OpenMined client-system guidance](https://openmined.org/blog/design-a-federated-learning-system-in-seven-steps/) | Client packaging, versioning, auth, monitoring, and recovery are first-class concerns. | Separate repository and local state machine, typed configuration, and test harness. | This is general systems guidance, not a normative healthcare standard. |

@@ -8,6 +8,7 @@ import EngineeringStandards from "@/pages/EngineeringStandards";
 import ImplementationPlan from "@/pages/ImplementationPlan";
 import ApiReference from "@/pages/ApiReference";
 import Home from "@/pages/Home";
+import HospitalNode from "@/pages/HospitalNode";
 import NotFound from "@/pages/NotFound";
 import Requirements from "@/pages/Requirements";
 import ResearchLog from "@/pages/ResearchLog";
@@ -30,6 +31,7 @@ function Router() {
         <Route path="/data-management" component={DataManagement} />
         <Route path="/api" component={ApiReference} />
         <Route path="/implementation-plan" component={ImplementationPlan} />
+        <Route path="/hospital-node" component={HospitalNode} />
         <Route path="/research-log" component={ResearchLog} />
         <Route component={NotFound} />
       </Switch>

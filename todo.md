@@ -323,6 +323,46 @@
 - [x] Record that Render Shell is unavailable on the free instance, preventing an in-container readiness diagnostic without upgrading.
 - [x] Change the free Render service’s platform health path from strict `/health/ready` to `/health/live` solely for test-environment admission; public liveness now returns HTTP 200.
 - [x] Confirm strict `/health/ready` remains HTTP 503 after the official R2 endpoint and `auto` region correction; the free Render API is hosted for liveness testing but is not operationally ready for federated workflows.
+
+## Azure-First Operational Boundary
+
+- [x] Designate the Azure VPS deployment as the authoritative Core control-plane and execution environment for all current federated workflows.
+- [x] Retain the Render free API and Cloudflare-managed backup components as a non-primary continuity path only; they must not become the source of operational state, dispatch ownership, or release authority.
+- [ ] Implement and validate the missing Python aggregation-worker runtime against the Azure-first queue, storage, workload-identity, and callback boundary.
+- [x] Implement the descriptor-only Python aggregation runtime with official BullMQ Python consumption, deterministic bounded archive adapters, worker-only S3 access, authenticated callback support, and an explicit disabled-by-default consumption gate.
+- [x] Pass the full Core quality gate after the worker addition: 43 TypeScript tests and 8 Python tests.
+- [x] Publish Core commit `351ee6f` to the protected main branch; the existing Azure quality-gate and deployment workflows have been triggered for the aggregation-worker runtime.
+- [x] Confirm Core Quality Gates run 23 completed successfully for `351ee6f`; Azure deployment run 8 is in progress.
+- [x] Confirm Azure deployment run 8 completed successfully for `351ee6f`; the aggregation-worker container is running but remains intentionally idle until a real workload credential enables queue consumption.
+- [x] Publish follow-up Core commit `9b9b5ff` so the disabled worker explicitly logs its safety-gate state on the next automated Azure rollout.
+- [x] Verify Azure deployment run 9 and Core Quality Gates run 24 both completed successfully for `9b9b5ff`.
+- [x] Validate the Python worker image and disabled Azure Compose service directly on the VPS: release `9b9b5ff59d5901e33e65d610c59fa3b87115f6b1` runs the container and logs its explicit identity-gated disabled state.
+- [x] Deploy the private Keycloak issuer/JWKS path, protected client-credentials source, active local `ml_worker` mapping, and image/runtime corrections on Azure; Core Quality Gates run 30 and protected deployment run 15 completed for `d35bebc`.
+- [ ] Keep `AGGREGATION_WORKER_ENABLED=false` until a bounded synthetic queue and authenticated descriptor-only callback exercise is designed and verified; only that separate proof can justify a temporary explicit enablement.
+
+## Azure Test Workload Identity
+
+- [x] Define and deploy a private test-only Keycloak issuer/JWKS path within the Azure Core topology; no identity-management interface is public and it is not a production human-auth provider.
+- [x] Register an active local `ml_worker` workload identity from the private client-credentials subject, with the callback audience and `workload_kind` claim mapper required by the Core callback guard.
+- [x] Provision the worker’s protected client-credentials token path and gate worker startup on successful identity bootstrap; the worker remains explicitly disabled after start.
+- [ ] Enable queue consumption only for a bounded synthetic test and verify an authenticated descriptor-only callback before treating the worker as operational.
+
+## Verified Azure Private Workload-Identity Rollout
+
+- [x] Repair release-helper drift by synchronizing the committed activation script before every SSH release activation; the helper self-provisions the protected test client-secret file when absent and exports it to Compose without placing its value in source control or the public ledger.
+- [x] Repair the Node image to include the one-shot workload bootstrap, make the PostgreSQL client a direct root runtime dependency, and repair the Python image file permissions so the non-root worker can import its package.
+- [x] Repair the PostgreSQL type inference issue in the test bootstrap organization query; bootstrap logs now confirm the active mapping.
+- [x] Verify Azure release `d35bebca16e7ef50e691c76e074cbdbd957359ab`: Keycloak and API are healthy, bootstrap exited successfully, `ml_worker|active` is present in PostgreSQL, the worker logs its disabled safety gate, and public `/health/live` and `/health/ready` both return HTTP 200.
+- [ ] Add a bounded end-to-end synthetic aggregation/callback exercise before any worker enablement or operational claim.
+
+## Redis Sentinel Revalidation on Azure
+
+- [x] Run the disposable, isolated Redis primary/replica/Sentinel topology on the resized Azure VPS without altering the live Core Redis container or its persisted state.
+- [x] Confirm initial master recognition at the disposable primary and two healthy replicas before a controlled primary loss.
+- [x] Record the bounded failover outcome: all Sentinels reached objective down detection, but repeated Sentinel `+tilt` intervals and `-failover-abort-no-good-slave` prevented a replacement-primary election.
+- [x] Remove all disposable validation containers, network, and volumes; confirm the live Core Redis container remains healthy.
+- [x] Keep the Core on its direct Redis URL for the Azure test environment. Do not introduce Sentinel-aware application connections until a stable, repeatable promotion is proven in an isolated topology.
+- [ ] Investigate the recurring Sentinel tilt/no-good-slave behavior in a future dedicated resilience pass before considering Redis Sentinel as a Core availability dependency.
 - [ ] Configure Docker build/start settings, health/readiness checks, non-secret configuration validation, and explicit separation from the existing Azure test deployment for each Render service.
 - [x] Grant Render App access only to `Paradox-Tech-BD/federated-aggregator-core`, then stage the separate API service with the `main` branch, Singapore region, and tested `infra/deploy/Dockerfile.node` build path.
 - [x] Stage the API service’s protected runtime variables in Render, including explicit test-only OIDC placeholders; Render masks variable values in the service form, and the selected Starter instance requires active Render billing before service creation can complete.

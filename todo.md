@@ -33,6 +33,7 @@
 - [x] Add in-memory scoped capability, checksum, token, remote-outcome, and fake storage guards at `deee8a6` and `1dcff80`; Hospital Node Quality Gates #3 and #4 passed. The work proves only synthetic contract behavior—no Azure/Core call, capability URL, automatic retry, persistent credential, raw byte API, or hospital data path was introduced.
 - [x] Add the opt-in localhost-only synthetic status read and static Compose test profile at `e11d661`; Quality Gates #5 passed in 20 seconds. The direct loopback response is tested; Docker is unavailable in this sandbox, so no container runtime proof or public deployment is claimed.
 - [x] Specify the additive Core hospital-node workload contract before integration: distinct audience/guard, participation-gated assignment and lease lifecycle, descriptor-only artifact intent/submission, safe event/audit schema, test sequence, and bounded Azure synthetic proof. Existing human and `ml_worker` routes remain prohibited.
+- [x] Implement and deploy the first Core policy-only slice at `79bdcee`: hospital-node assignment/lease vocabulary, state transitions, lease eligibility, repository port, and deterministic denials. Full local CI, Core Quality Gates, Azure deployment, and public liveness/readiness passed; no migration, HTTP route, capability, credential, node call, or worker activation was added.
 - [ ] Validate the initial slice against the Core test environment, record decisions and evidence in the public ledger, and continue autonomously to the next documented delivery gate.
 
 ## Technical Requirements Analysis

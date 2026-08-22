@@ -154,6 +154,12 @@ The summary is an allowlisted object: completed local epochs, policy-approved co
 
 This design does **not** authorize a real hospital, clinical trial, real patient data, BreaKHis image transfer, public node endpoint, data-mount on Azure, automatic retry, Redis Sentinel work, blockchain/IPFS, MetaMask/SIWE, or Core release policy change.
 
+## 10. Implementation record — first policy slice
+
+Core commit `79bdcee` implements the first delivery-order item only: shared assignment/lease vocabulary; an explicit Core domain state-transition matrix; a lease-eligibility rule requiring active `hospital_node` kind, active participant, open round, assigned state, and unexpired deadline; an application repository port; and three deterministic application tests. It deliberately has **no** PostgreSQL migration, persistence adapter, Nest controller, OIDC audience/guard, Keycloak client, artifact capability, submission path, Node-to-Core request, or Azure synthetic node.
+
+The full Core suite passed locally with 46 TypeScript tests (including database integration coverage) and 9 Python tests. GitHub Core Quality Gates completed successfully in 1 minute 32 seconds; the protected Azure deployment also completed successfully for `79bdcee4d336fb0b587e31310b2c341cf220c2ea`. Public liveness and strict dependency readiness both returned HTTP 200 after that policy-only rollout. The existing worker remains default-disabled; no worker profile, environment example, workload credential, or runtime activation change is part of this commit.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)

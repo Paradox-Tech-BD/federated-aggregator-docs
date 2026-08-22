@@ -10,10 +10,10 @@
 
 ## GitHub Organization Migration to hstu-research
 
-- [ ] Inventory every organization-bound reference across the Core, documentation, administrator portal, thesis, Git remotes, GitHub Actions, deployment workflows, and hosted-service configuration.
+- [x] Inventory every organization-bound reference across the Core, documentation, administrator portal, thesis, Git remotes, GitHub Actions, deployment workflows, and hosted-service configuration.
 - [x] Transfer `federated-aggregator-core`, `federated-aggregator-docs`, `federated-aggregator-admin-portal`, and `thesis_breast_cancer` to `hstu-research` while preserving repository visibility, history, and default branches.
-- [ ] Update local repository remotes, source metadata, badges, CI/CD workflow references, Azure deployment scripts, and documentation links to make `hstu-research` authoritative.
-- [ ] Verify the transferred repository URLs, GitHub Actions visibility, Azure deployment source path, and documentation build; record the result in the public research chronology and publish a documentation checkpoint.
+- [x] Update local repository remotes, active source metadata, CI/CD and deployment documentation, Render source settings, and documentation links to make `hstu-research` authoritative. The Azure workflow remains repository-local, so no Azure source URL rewrite was required.
+- [x] Verify the transferred repository URLs, GitHub Actions visibility, Azure deployment source path, Core Quality Gates run 31, protected Azure deployment run 16, and the Render documentation build from `hstu-research/federated-aggregator-docs` commit `3a8e65b`; record the result in the public research chronology and publish a documentation checkpoint.
 
 ## Technical Requirements Analysis
 

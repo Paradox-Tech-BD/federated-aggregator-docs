@@ -360,12 +360,13 @@ Migration `0012_hospital_node_base_model_descriptors` will add the `base_model_a
 | `checksum_sha256`, `byte_size` | Frozen descriptor evidence copied from the verified artifact. | Positive and equal to the verified artifact; no bytes. |
 | `descriptor_digest` | Canonical Base64 SHA-256 digest over the registry’s descriptor-only values. | Calculated by Core, never supplied by a node. |
 | `state` | `active` or `revoked`, with time/audit fields. | Revocation prevents future intents; no replacement mutation. |
+| `hospital_node_base_model_descriptor_events` | Append-only registry evidence: descriptor ID, `base_model_descriptor_registered` or `base_model_descriptor_revoked`, correlation ID, and scalar-safe details. | No assignment dependency, object key, URL, provider response, token, bytes, or free text. |
 
 The registry will have unique constraints on `(federation_id, base_model_version_id)`, `artifact_id`, and `descriptor_digest`. No update can replace its artifact or descriptor values. A revocation is an additive state transition with a scalar-safe event, not a deletion. The existing round string deliberately stays unchanged in this increment; the mapping gives it authoritative meaning without a breaking round migration.
 
 ### 24.3 Authority, workflow, and receipt
 
-Only a private synthetic-validation application service may register a generated descriptor during this first mapping slice. It receives a Core-held artifact identity and registry facts, loads the artifact and federation, and rejects it unless the artifact is `verified`, category `base_model_archive`, federation-bound, positive-size, and checksum-consistent. It computes `descriptor_digest`, writes the immutable registry record, and appends one scalar-safe `base_model_descriptor_registered` hospital-node event attached to the matching generated assignment only when used in a bounded fixture. It creates no assignment, lease, intent, OIDC principal, capability, storage call, dispatch, or outbox event.
+Only a private synthetic-validation application service may register a generated descriptor during this first mapping slice. It receives a Core-held artifact identity and registry facts, loads the artifact and federation, and rejects it unless the artifact is `verified`, category `base_model_archive`, federation-bound, positive-size, and checksum-consistent. It computes `descriptor_digest`, writes the immutable registry record, and appends one scalar-safe `base_model_descriptor_registered` registry event in the same transaction. It creates no assignment, lease, intent, OIDC principal, capability, storage call, dispatch, or outbox event.
 
 The safe registration receipt contains only registry ID, federation ID, base-model version ID, artifact ID, model/preprocessing/descriptor digests, checksum, size, state, and timestamp. It contains no `objectKey`, `objectVersion`, bucket, URL, credential, provider response, content, bytes, local path, patient field, or free-text diagnostic. Exact registration replay returns the same receipt only when all immutable values agree; a changed replay, wrong federation, non-verified artifact, incorrect category, checksum/size mismatch, duplicate version, or duplicate artifact/digest fails without partial writes.
 
@@ -393,7 +394,7 @@ sequenceDiagram
 |---|---|---|
 | Contract/domain | Canonical digest is deterministic; category/status/federation/size/checksum/revocation rules reject invalid facts. | Accepting node-supplied locator, bytes, provider data, or arbitrary JSON. |
 | Application | Core resolves the artifact itself, returns a redacted receipt, and permits only exact replay. | HTTP, OIDC, lease, intent, capability, storage adapter, or dispatch invocation. |
-| PostgreSQL | Migration and constraints prevent conflicting version/artifact/digest records; atomic registration writes one safe event. | Copying `object_key` into the registry/event/receipt. |
+| PostgreSQL | Migration and constraints prevent conflicting version/artifact/digest records; atomic registration writes one safe registry event. | Copying `object_key` into the registry/event/receipt. |
 | Azure deployment | Core Quality Gates, protected release, liveness/readiness, and disabled worker must pass. | Any profile execution before the deployment gate passes. |
 | Bounded future proof | One private generated registry record is registered, replayed exactly, revoked or otherwise closed, and observed only through aggregate-safe facts. | Model download, storage resolution, lease call, read intent, training, update, submission, aggregation, or real hospital data. |
 

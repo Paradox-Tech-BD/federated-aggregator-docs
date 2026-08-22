@@ -178,6 +178,12 @@ Core commit `263e596` adds `PostgresHospitalNodeAssignmentRepository` and a migr
 
 The full local suite passed with 49 TypeScript tests and 9 Python tests, including the new migrated-database lease test. Core Quality Gates completed successfully in 1 minute 37 seconds; the protected Azure deployment completed successfully in 2 minutes 49 seconds for `263e596a8e00dd77af476f4310c4c6a0de891839`; and public liveness/readiness returned HTTP 200. This still exposes no controller or route, Keycloak node client, capability, immutable command payload, artifact update intent, submission/reconciliation path, real node, hospital data, or worker-gate change.
 
+## 14. Decision before route exposure — canonical command payload
+
+The implemented Core protocol-version table currently contains the algorithm, architecture identifier, and immutable configuration digest, but it does not contain the exact fields that the already-tested Agent command validator requires: proximal coefficient, local epochs, model/preprocessing digests, and base-model checksum/size. A digest alone is insufficient to reconstruct or safely serve a command. Therefore, Core must add a **canonical descriptor-only command payload** to the assignment lifecycle before a lease route is exposed.
+
+The new payload is strictly the `hospital-node-command/v1` value already validated by the Agent: assignment/correlation/federation/round IDs; expiry; algorithm/proximal coefficient/local epochs/model and preprocessing digests; and base-model checksum/byte size. It must exclude a provider URL, object key, credential, model byte, local data information, path, free text, or patient field. Core calculates the stored digest from that canonical payload at assignment creation and a lease route later returns the stored payload only after the existing assignment/participant/workload checks pass. This is an additive assignment column plus creation-policy work; it does not authorize a human route to hand-craft commands or allow a node to change any command field.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)

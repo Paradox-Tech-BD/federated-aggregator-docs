@@ -7,7 +7,7 @@ const documents = [
   { title: "Requirements analysis", description: "Non-technical and technical requirements, explicit privacy boundary, research value, and measurable acceptance signals.", file: "HOSPITAL_NODE_AGENT_REQUIREMENTS.md" },
   { title: "Schema and workflow", description: "Local SQLite control state, append-only events, normal and exception flows, and no patient-data persistence.", file: "HOSPITAL_NODE_AGENT_DATA_AND_SCHEMA.md" },
   { title: "Architecture and API", description: "TypeScript/Python split, simulated deployment topology, existing Core limitations, and proposed workload contract.", file: "HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md" },
-  { title: "Core workload contract", description: "Additive Core authorization, assignment, lease, descriptor, audit, and verified bounded Azure lease evidence before later integration boundaries.", file: "CORE_HOSPITAL_NODE_WORKLOAD_CONTRACT.md" },
+  { title: "Core workload contract", description: "Additive Core authorization, assignment, lease, descriptor, audit, and verified bounded Azure lease and creation evidence before later integration boundaries.", file: "CORE_HOSPITAL_NODE_WORKLOAD_CONTRACT.md" },
   { title: "Implementation handoff", description: "Repository map, delivery slices, test gates, contract policy, and autonomous decision rules.", file: "HOSPITAL_NODE_AGENT_IMPLEMENTATION_HANDOFF.md" }
 ];
 
@@ -30,17 +30,17 @@ export default function HospitalNode() {
           </section>
           <section className="node-evidence-row"><div><span>REPOSITORY / COMMIT</span><strong>hstu-research / <i>cfcf1dc</i></strong></div><p>Hospital Node Quality Gates #1 completed successfully for formatting, strict TypeScript, four synthetic execution tests, and four Python optimization tests.</p><a className="editorial-link" href="https://github.com/hstu-research/federated-aggregator-hospital-node" target="_blank" rel="noreferrer">Inspect repository <ArrowUpRight size={15} /></a></section>
           <section className="node-documents"><div className="section-heading"><span>DOCUMENTED DELIVERY RECORD</span><span>six design artifacts</span></div>{documents.map((document, index) => <a key={document.file} className="node-document" href={`https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/${document.file}`} target="_blank" rel="noreferrer"><span>{String(index + 1).padStart(2, "0")}</span><div><h2>{document.title}</h2><p>{document.description}</p></div><FileText size={19} /><ArrowUpRight size={17} /></a>)}</section>
-          <section className="node-next"><div><span>NEXT DESIGN GATE</span><h2>Define narrow Core assignment-creation authority before any capability or submission work.</h2></div><p>The separate private identity and generated assignment now proved one guarded Azure lease and were immediately expired. Next, the ledger must define a bounded synthetic authority that creates an assignment only from frozen eligible Core facts; safe base-model read, update intent, verification, and submission remain unimplemented. No human route, ML-worker identity, transfer, training, or hospital data is permitted.</p><CheckCircle2 size={24} /></section>
+          <section className="node-next"><div><span>NEXT DESIGN GATE</span><h2>Define a descriptor-only base-model-read intent before any storage access.</h2></div><p>The private assignment authority now proved one generated Core-side creation and exact replay, then expired its fixture. Next, the ledger must define node-only, lease-bound intent issuance and the Core-owned model-descriptor mapping it depends on. No URL, credential, locator, byte, download, training, update, submission, ML-worker identity, or hospital data is permitted.</p><CheckCircle2 size={24} /></section>
         </div>
         <aside className="node-provenance" aria-label="Bounded Azure proof provenance">
-          <span>PROOF / 001</span>
-          <h2>Lease<br />evidence</h2>
+          <span>PROOF / 002</span>
+          <h2>Creation<br />evidence</h2>
           <StatusStamp status="VALIDATED" />
-          <div><span>RELEASE</span><strong>7d9218c</strong></div>
-          <div><span>IDENTITY</span><strong>separate client</strong></div>
-          <div><span>BOUND</span><strong>one lease</strong></div>
+          <div><span>RELEASE</span><strong>0b48aeb</strong></div>
+          <div><span>AUTHORITY</span><strong>private service</strong></div>
+          <div><span>BOUND</span><strong>one creation</strong></div>
           <div><span>CLOSURE</span><strong>expired</strong></div>
-          <p>Generated synthetic control facts only. No transfer, training, submission, or hospital data.</p>
+          <p>Generated synthetic control facts only. No model access, transfer, training, submission, or hospital data.</p>
         </aside>
       </div>
     </div>

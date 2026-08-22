@@ -307,6 +307,37 @@ This runner must be a new opt-in Compose profile with no public port, no human e
 
 The runner, Compose profile, tests, and its bounded Azure execution require their own implementation record. Only after this creation-only proof is complete should the next design consider a time-bounded base-model read capability.
 
+## 22. Implementation and evidence record — bounded creation-only composition proof
+
+Core commit `0b48aeb` adds the new opt-in `hospital-node-assignment-creation-validation` Compose profile and its one-shot `bounded-hospital-node-assignment-creation.mjs` runner. The profile has no public port, no API, Keycloak, OIDC, storage, MinIO, aggregation-worker, dispatch-worker, or lease dependency. It depends only on completed migrations and receives the ordinary private database runtime configuration. The source runner is syntax-checked, and local full quality passed with 60 TypeScript tests and 9 Python tests. Core Quality Gates completed in 1 minute 48 seconds; protected Azure deployment completed in 2 minutes 46 seconds. [9] [6]
+
+The first operator invocation stopped during Compose interpolation before a container was created because the general Compose topology requires protected secret-file references even though this profile consumes neither identity nor secret. It was rerun with only non-secret file references necessary to resolve the existing topology; no secret value was read or emitted. The validation container then built and ran **once**. It inserted generated prerequisite organizations, workload, federation, participant, protocol, and round facts only. The assignment itself was created exclusively by `SyntheticHospitalNodeAssignmentCreationService`, which computed the canonical command digest, returned an `assigned` descriptor-only receipt, and recovered one exact replay. Direct database access in the runner was limited to allowed prerequisite seeding, safe evidence assertions, and terminal cleanup—not the assignment/command/event creation under proof.
+
+The runner accepted success only if the receipt matched the generated assignment and Core-computed digest, the receipt contained neither `objectKey` nor `credential`, exactly one `assignment_created` event and one canonical command existed, and exact replay returned the same receipt. It then expired the fixture and wrote one `bounded_assignment_creation_closed` safe event. Aggregate post-run evidence was **one closure event, one expired synthetic assignment, and zero active synthetic assigned/leased records**. The ephemeral runner had zero remaining instances. Azure public liveness and readiness both returned HTTP 200, and the aggregation worker remained configured as disabled with its default-disabled log state.
+
+This proves the private creation service is actually composable and bounded for generated facts. It does **not** prove model access, object transfer, storage capability issuance, node download, training, update creation, update submission, aggregation, clinical integration, or hospital operation. No human route, `ml_worker` identity, hospital-node token, lease call, storage locator, credential, byte stream, data record, or model artifact was used.
+
+## 23. Next documented delivery gate — descriptor-only base-model-read intent
+
+The next increment is a design-only **base-model-read intent** boundary. It will not authorize a download or mint a signed URL. Its purpose is to give an already authenticated, active `hospital_node` workload an idempotent Core-owned record that a specific active lease is eligible to request base-model access later, while retaining every locator, credential, provider response, and model byte outside both API and PostgreSQL.
+
+| Boundary decision | Required rule | Explicitly not provided |
+|---|---|---|
+| Caller | Only the existing `HospitalNodeAuthGuard` may reach a new node-only intent endpoint; workload ID is derived from its verified `fedagg-hospital-node` principal. | Human/admin route, `ml_worker` callback, reused secret, arbitrary workload header, public page, or browser portal. |
+| Preconditions | Assignment and lease must match the principal workload, be `leased`/`active`, unexpired, and bound to the unmodified canonical command digest. The round remains in its permitted state. | Intent for an `assigned`, expired, consumed, revoked, cross-workload, cross-round, or changed-command lease. |
+| Base-model evidence | Core must resolve a verified, Core-owned artifact reference from the frozen base-model version and preserve only immutable descriptor identity, checksum/digest, size, assignment, lease, and expiry. | Object key, URL, bucket, storage provider response, credential, byte range, model bytes, preprocessing payload, or patient field. |
+| Persistence | Additive `hospital_node_base_model_read_intents` record with exact request idempotency, one active intent per lease, state (`issued`, `expired`, `revoked`), expiry, descriptor digest, and scalar-safe events. | A general capability table that permits upload, update submission, model release, queue dispatch, or a bearer credential. |
+| Response | Descriptor-only intent receipt: IDs, command/base-model digest, size, expiry, and state. | Download link, credential, locator, bytes, opaque provider token, or an assertion that data has been read. |
+| Later resolution | A separately designed private storage adapter may consume a live intent only after its own contract and proof exist. | Any object lookup, presigned URL, storage call, or Agent download in this increment. |
+
+### 23.1 Required contract, flow, and tests before code
+
+The contract must introduce a versioned `hospital-node-base-model-read-intent/v1` receipt with no expandable free-form payload. The request contains only an assignment identifier and UUID idempotency key; all workload, lease, model, round, protocol, and descriptor binding comes from Core records. Domain policy must reject every non-active/context-mismatched lease before persistence. The application service must calculate the descriptor digest from Core-held immutable facts, not accept it from the node. The Postgres transaction must return only an exact replay, refuse competing active intent, append a scalar-safe `base_model_read_intent_issued` event, and emit no work-dispatch outbox event.
+
+Before implementation, the data design must identify the authoritative mapping from a round’s `baseModelVersionId` to a verified artifact descriptor. If the existing Core schema cannot represent that mapping without a locator in the boundary, the mapping itself is a prerequisite design change; it must not be simulated by accepting a node-supplied checksum or storage reference. The endpoint must serialize a receipt through an explicit redaction test that asserts the absence of object keys, URLs, credentials, bytes, and provider response fields.
+
+The test sequence must include domain denials for human/ML-worker principal paths, wrong workload, lease state, expiry, command digest, round, and model binding; application idempotency and redaction tests; migrated PostgreSQL atomicity/replay/one-active-intent tests; controller guard/principal tests; and a future creation-only Azure proof that issues then expires an intent without storage access. The current creation-only proof does not authorize that future proof or any object transfer.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)
@@ -324,3 +355,5 @@ The runner, Compose profile, tests, and its bounded Azure execution require thei
 [7] [Current Postgres hospital-node assignment repository](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/persistence-postgres/src/hospital-node-assignment-repository.ts)
 
 [8] [Private assignment-creation application service](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/application/src/hospital-node-assignment-creation-service.ts)
+
+[9] [Bounded assignment-creation validation runner](https://github.com/hstu-research/federated-aggregator-core/blob/main/infra/validation/bounded-hospital-node-assignment-creation.mjs)

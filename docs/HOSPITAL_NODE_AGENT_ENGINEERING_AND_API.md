@@ -29,6 +29,10 @@ federated-aggregator-hospital-node/
 
 The first persistence increment is deliberately narrower than a deployed node service. `SqliteLocalRunRepository` owns a composite unique identity of assignment and idempotency key, performs state update plus event append inside a SQLite transaction, and exposes only event labels to its test fixture. `FakeCoreSubmissionSink` and `FakeCoreAssignmentSource` are in-process contract adapters; they do not mint tokens, construct URLs, or accept artifact bytes. The application returns a recovered terminal run before invoking validation, trainer, or submission ports. This prevents a controlled restart from duplicating an already accepted synthetic submission without asserting recovery for an interrupted nonterminal operation.
 
+### Implemented capability and retry evidence
+
+Commits `deee8a6` and `1dcff80` complete the next in-memory adapter boundary. A scoped capability guard requires exact assignment and read/write operation plus an unexpired lease. `FakeScopedObjectStore` accepts a generated update only after that capability check and a constant-time SHA-256 checksum match; it returns a descriptor only and carries neither URL, object key, credential, remote request, nor persisted byte record. `FakeWorkloadTokenSource` returns a synthetic token from process memory only when audience and expiry match. Remote outcomes are classified as accepted, retryable (`temporary_unavailable` or `transport_timeout`), or terminal (`deadline_closed`, invalid descriptor, forbidden scope); classification is evidence only and does not automatically resubmit. Hospital Node Quality Gates #3 and #4 each passed remotely, with the final suite containing ten TypeScript tests and four Python ML tests.
+
 ### Rules
 
 | Rule | Enforcement |

@@ -36,7 +36,7 @@ The repository begins with strict formatter, linter, TypeScript, Python type/tes
 | 1 | Domain state machine and local-safe schemas. | Assignment/run transition and idempotency matrix. | Terminal run cannot reopen. |
 | 2 | Python ML core with tiny tensors. | `μ=0` baseline; `μ>0` proximal penalty; invalid tensor/checkpoint rejection. | Cross-language fixture digests match. |
 | 3 | SQLite local state and redacted status projection. | Migration, crash/restart, append-only event, redaction snapshot. | Restart cannot duplicate successful run. **Persistence portion implemented at `2468f4b`; local status/redaction projection remains open.** |
-| 4 | Fake Core/storage/token adapters and execute-assignment use case. | Expiry, wrong scope, checksum, retry classification. | Bytes never enter Node API or database. |
+| 4 | Fake Core/storage/token adapters and execute-assignment use case. | Expiry, wrong scope, checksum, retry classification. | Bytes never enter Node API or database. **Implemented with in-process fakes at `deee8a6` and `1dcff80`; no HTTP client or automatic retry is implied.** |
 | 5 | Local localhost status service and Compose simulated node. | End-to-end synthetic assignment to accepted fake submission. | No public listener by default. |
 | 6 | Core workload-contract proposal implementation, then Azure synthetic integration. | Contract/e2e against private Core test routes. | One synthetic node result accepted by Core. |
 
@@ -56,7 +56,7 @@ The repository begins with strict formatter, linter, TypeScript, Python type/tes
 
 All cross-language commands/results use versioned JSON Schema plus canonical serialization. The same golden fixtures must validate in TypeScript and Python. Any change to model format, preprocessing, optimizer semantics, `μ`, local epochs, metric policy, artifact archive format, or response schema requires a successor `schemaVersion`; the Agent rejects a version it does not implement.
 
-The Core’s current artifact-intent, round-start, and internal worker-result endpoints are human/internal paths. Phase 6 may add the **proposed** workload endpoints only after Core authorization, data model, audit, and integration tests are extended. Until then, the Agent uses fakes and documents the contract gap rather than using a human credential as a shortcut.
+The Core’s current artifact-intent, round-start, and internal worker-result endpoints are human/internal paths. Phase 6 may add the **proposed** workload endpoints only after Core authorization, data model, audit, and integration tests are extended. Until then, the Agent uses fakes and documents the contract gap rather than using a human credential as a shortcut. The completed fakes prove guard behavior only: scoped assignment/operation/expiry, constant-time checksum comparison, audience/expiry token lookup, and outcome classification. They do not contact Azure, create a bearer token, retry an upload, or send a model byte to the Core.
 
 ## 6. Autonomous decisions
 

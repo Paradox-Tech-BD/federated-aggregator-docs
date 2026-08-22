@@ -56,7 +56,9 @@
 - [x] Increment J0 — Publish the one-shot descriptor-intent issuance-and-expiry proof profile contract before implementation. It must use generated facts only, issue one intent through the guarded Core route, assert redaction, expire the intent/lease/assignment, append safe closure evidence, and never contact storage or enable the aggregation worker.
 - [ ] Increment J1 — Implement and deploy the documented opt-in descriptor-intent proof profile/runner. Do not execute it in Azure until its own quality/deployment and current health/default-disabled-worker checks pass.
 - [x] Increment J1a — Record the pre-route duplicate-workload discovery and correction: the existing separate synthetic workload mapping must be reused rather than duplicated. The initial profile transaction rolled back before any guarded request or read-intent write.
-- [ ] Increment J1b — Implement, quality-check, and deploy the mapping-reuse correction; then perform one corrected validation only after renewed health/default-disabled-worker checks.
+- [x] Increment J1b — Implement, quality-check, and deploy the mapping-reuse correction. Core `261a639` passed local quality, Core Quality Gates, and protected Azure deployment; the source has not yet been executed because the next Compose run reused a stale local profile image.
+- [x] Increment J1c — Publish the explicit runner-image rebuild requirement. The prior correction release activated successfully, but Compose reused the old local profile image; that stale image repeated the pre-route duplicate workload failure and rolled back before the guarded route.
+- [ ] Increment J1d — Recheck Azure health/default-disabled worker, then perform one `run --build` validation with the corrected runner. Do not retry a post-request runtime failure without recording and reviewing it first.
 
 ## Technical Requirements Analysis
 

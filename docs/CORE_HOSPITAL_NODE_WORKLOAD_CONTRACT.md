@@ -439,6 +439,12 @@ The first attempt to start the new profile encountered two configuration-prestar
 
 This is a correctness signal, not a reason to create a second identity or bypass workload binding. The corrected runner will look up the existing active `hospital_node` workload by the verified issuer/subject pair and reuse only its Core workload and organization IDs for the generated federation-participant fixture. It will create fresh generated federation/round/descriptor/assignment/lease facts around that already-separate synthetic workload, then make the single guarded read-intent request. It will not print the subject, workload ID, organization ID, token, secret, database URL, or any generated identity. The corrected source must pass quality and protected deployment, and Azure liveness/readiness plus the disabled-worker gate must be rechecked before one corrected run.
 
+### 28.2 Stale-image invocation correction
+
+The workload-reuse correction passed local full quality, Core Quality Gates, and protected Azure deployment. A subsequent profile invocation nonetheless repeated the same pre-route duplicate-workload error before an API request because `docker compose run` reused the pre-correction local image tag; it did not build the newly released runner source. The resulting transaction again rolled back, leaving no intent, assignment/lease closure, storage operation, model access, training, update, submission, dispatch, or aggregation result.
+
+The next and only remaining proof invocation must use `docker compose ... run --build` with the explicit deployed Compose file and the already required non-secret file references. The build step is an operational image-refresh safeguard, not a source or identity change. Before it runs, current release health and the default-disabled worker gate must be rechecked. Any runtime failure after the rebuilt runner begins its guarded request must be documented before another change or invocation; the profile must not be retried silently.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)

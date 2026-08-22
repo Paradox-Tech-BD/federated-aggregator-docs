@@ -58,7 +58,9 @@
 - [x] Increment J1a — Record the pre-route duplicate-workload discovery and correction: the existing separate synthetic workload mapping must be reused rather than duplicated. The initial profile transaction rolled back before any guarded request or read-intent write.
 - [x] Increment J1b — Implement, quality-check, and deploy the mapping-reuse correction. Core `261a639` passed local quality, Core Quality Gates, and protected Azure deployment; the source has not yet been executed because the next Compose run reused a stale local profile image.
 - [x] Increment J1c — Publish the explicit runner-image rebuild requirement. The prior correction release activated successfully, but Compose reused the old local profile image; that stale image repeated the pre-route duplicate workload failure and rolled back before the guarded route.
-- [ ] Increment J1d — Recheck Azure health/default-disabled worker, then perform one `run --build` validation with the corrected runner. Do not retry a post-request runtime failure without recording and reviewing it first.
+- [x] Increment J1d — Recheck Azure health/default-disabled worker, then perform one `run --build` validation with the corrected runner. The rebuilt runner issued and expired one descriptor-only intent; closure evidence was one expired assignment, zero active leases, zero issued intents, one closure event, zero runner instances, HTTP 200 liveness/readiness, and disabled worker.
+- [x] Increment J2 — Publish the next Core-mediated model-stream authorization design gate and its no-locator/no-credential/no-transfer-before-proof constraints.
+- [ ] Increment J3 — Produce the full requirements, schema, workflow, architecture, engineering-standard, API, and implementation-handoff dossier for Core-mediated generated-model streaming before any stream endpoint, Agent download, or local training integration is implemented.
 
 ## Technical Requirements Analysis
 

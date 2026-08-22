@@ -445,6 +445,20 @@ The workload-reuse correction passed local full quality, Core Quality Gates, and
 
 The next and only remaining proof invocation must use `docker compose ... run --build` with the explicit deployed Compose file and the already required non-secret file references. The build step is an operational image-refresh safeguard, not a source or identity change. Before it runs, current release health and the default-disabled worker gate must be rechecked. Any runtime failure after the rebuilt runner begins its guarded request must be documented before another change or invocation; the profile must not be retried silently.
 
+## 29. Evidence record — bounded Azure descriptor-intent issuance and expiry proof
+
+The corrected workload-reuse runner commit `261a639` passed local full quality, Core Quality Gates, and protected Azure deployment. After a renewed release check showed public liveness/readiness HTTP 200 and the aggregation worker still disabled, the validation profile was invoked with an explicit image rebuild. The rebuilt runner reused the previously verified separate synthetic `hospital_node` workload mapping, created only fresh generated surrounding federation, participant, protocol, round, internal descriptor/assignment/lease facts, acquired the separate private client token, and called **only** `POST /v1/workload-assignments/:assignmentId/base-model-read-intents` once.
+
+The response satisfied the descriptor-only contract: it had the expected intent state, assignment, lease, descriptor, command digest, and descriptor digest, while lacking object key, object version, URL, credential, provider response, and byte payload fields. The runner did not resolve an object, invoke a storage client, obtain a download URL, transfer model bytes, train locally, create an update, submit an update, dispatch work, invoke a worker callback, or enable aggregation. It then expired the synthetic intent, lease, and assignment and wrote `bounded_read_intent_closed`.
+
+Aggregate terminal evidence was **one expired proof assignment, zero active leases, zero issued intents, one closure event, and zero remaining runner instances**. Azure liveness/readiness remained HTTP 200 and the aggregation worker remained disabled. The prior duplicate-workload and stale-image failures both rolled back before the guarded route; the rebuilt run is the sole successful guarded issuance proof. This establishes receipt authorization and closure only; it is not a storage-read, download, byte-transfer, training, submission, aggregation, hospital-operation, or clinical-use proof.
+
+## 30. Next design gate — Core-mediated model-stream authorization
+
+The next increment is design-only. A Hospital Node eventually needs model bytes for synthetic local training, but the system must not expose an object locator, bucket, provider credential, or presigned URL. The proposed boundary is a **Core-mediated model-stream authorization**: an authenticated `hospital_node` workload presents its own active read-intent receipt to a new node-only Core endpoint; Core validates workload ownership, unexpired issued intent, immutable descriptor/command binding, one-time consumption, and response headers, then streams verified bytes from an internal storage adapter over the existing authenticated connection. The node never receives storage credentials or an object address.
+
+Before code, the ledger must define stream range policy, maximum response size, checksum verification behavior, content-type allowlist, cancellation and partial-transfer handling, intent-consumption timing, revocation/expiry race rules, binary audit evidence, rate limits, retention, and failure redaction. Its contract must make clear that a successful HTTP response is not training success and that no patient data, preprocessing input, local path, update, or model result may return to Core in the same increment. This design must be reviewed, tested, and separately proved with a generated non-clinical byte fixture before any Agent-side download or local FedAvg/FedProx integration begins.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)
@@ -470,3 +484,5 @@ The next and only remaining proof invocation must use `docker compose ... run --
 [11] [Verified base-model descriptor registry](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/persistence-postgres/src/hospital-node-base-model-descriptor-repository.ts)
 
 [12] [Descriptor-only read-intent controller](https://github.com/hstu-research/federated-aggregator-core/blob/main/apps/api/src/hospital-node-assignments/hospital-node-assignments.controller.ts)
+
+[13] [Bounded read-intent validation runner](https://github.com/hstu-research/federated-aggregator-core/blob/main/infra/validation/bounded-hospital-node-base-model-read-intent.mjs)

@@ -400,6 +400,18 @@ sequenceDiagram
 
 Only after this registry is implemented, deployed, and evidenced may the previously documented base-model-read intent boundary begin. The later intent will consume the registry digest and immutable facts; it will not rediscover or expose an artifact location.
 
+## 25. Implementation record — verified base-model descriptor registry
+
+Core commit `9fce888` implements migration `0012_hospital_node_base_model_descriptors`, which adds the private `base_model_archive` artifact category, `hospital_node_base_model_descriptors` registry, independent scalar-safe registry-event table, and an `active`/`revoked` state vocabulary. The registry has unique federation/version, artifact, and canonical descriptor-digest constraints; it stores federation, version, artifact identity, model/preprocessing digest, checksum, byte size, state, and correlation only. It does not copy `artifacts.objectKey`, object version, bucket, URL, credential, provider response, bytes, local path, patient field, or free text into its table, event, or safe receipt. [11]
+
+The framework-free private service loads artifact facts itself, requires a verified same-federation `base_model_archive`, computes a canonical descriptor digest, persists one immutable active descriptor and one `base_model_descriptor_registered` event atomically, and recovers only an exact replay. Domain tests reject invalid status/category/federation/checksum/size before a repository write; application tests assert Core digest calculation and receipt redaction; migrated PostgreSQL tests prove one descriptor/event, exact replay, and conflicting-version refusal. The mapping is not an HTTP endpoint and has no OIDC principal, lease, read intent, capability, storage adapter, object lookup, download, dispatch, update, submission, or aggregation behavior.
+
+Local full quality passed with **68 TypeScript tests and 9 Python tests**. Core Quality Gates completed successfully in **1 minute 44 seconds**; protected Azure deployment completed successfully in **2 minutes 45 seconds**. Azure public liveness/readiness returned HTTP 200, and the aggregation worker remained configured as disabled with its default-disabled log state. No bounded mapping runtime profile was added or run, so this is deployment and persistence evidence only—not proof of descriptor registration against a deployed artifact and not a model-access proof.
+
+## 26. Resumed delivery gate — descriptor-only base-model-read intent implementation
+
+The mapping prerequisite is complete. The next code increment may now implement the previously documented `hospital-node-base-model-read-intent/v1` issuance boundary, but only as a guarded descriptor-only receipt. It must consume the active registry’s immutable digest and facts, not any storage location. Before code, its exact domain/application/persistence/controller test set and migration must remain aligned to Section 23; before a future Azure run, the route must be deployed, liveness/readiness and the disabled worker must be verified, and its separate proof must issue then expire an intent without storage access.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)
@@ -421,3 +433,5 @@ Only after this registry is implemented, deployed, and evidenced may the previou
 [9] [Bounded assignment-creation validation runner](https://github.com/hstu-research/federated-aggregator-core/blob/main/infra/validation/bounded-hospital-node-assignment-creation.mjs)
 
 [10] [Core round and artifact schema](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/persistence-postgres/src/schema.ts)
+
+[11] [Verified base-model descriptor registry](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/persistence-postgres/src/hospital-node-base-model-descriptor-repository.ts)

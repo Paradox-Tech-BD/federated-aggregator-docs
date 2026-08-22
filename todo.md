@@ -50,8 +50,9 @@
 - [x] Increment F — Implement the documented creation-only profile, runner, and deterministic tests; deploy `0b48aeb`, then run it once only after Azure health and default-disabled worker verification. The proof closed as one expired synthetic assignment, zero active assigned/leased records, one closure event, and zero remaining runners.
 - [x] Increment G — Publish the descriptor-only base-model-read intent contract: lease-bound node-only issuance, Core-owned model descriptor mapping prerequisite, additive receipt/state/event design, exact replay, redaction, and no-storage-access proof requirements.
 - [x] Increment H0 — Publish the missing Core-owned verified base-model descriptor mapping contract and additive schema prerequisite. The current `rounds.baseModelVersionId` is an opaque string and the current artifact categories do not represent a verified base-model archive, so it cannot safely support a node read-intent yet.
-- [ ] Increment H1 — Implement and deploy only the documented verified base-model descriptor mapping plus persistence tests. Do not introduce node model-read intent issuance, a download URL, provider credential, object locator, byte transfer, model read, training, update, submission, dispatch, or aggregation-worker activation.
-- [ ] Increment H2 — Resume the documented base-model-read intent boundary only after H1 mapping evidence is recorded and accepted.
+- [x] Increment H1 — Implement and deploy only the documented verified base-model descriptor mapping plus persistence tests. Core `9fce888` added migration `0012`, immutable descriptor/event persistence, exact replay/conflict tests, and a private service; 68 TypeScript and 9 Python tests, quality/deployment, Azure health, and the disabled-worker gate passed. No mapping runtime profile ran.
+- [x] Increment H2 — Resume the documented base-model-read intent boundary only after H1 mapping evidence is recorded and accepted.
+- [ ] Increment I — Implement only the documented lease-bound, HospitalNodeAuthGuard-only descriptor receipt for base-model-read intent issuance plus its migration, redaction, atomicity, and guard tests. Do not introduce storage resolution, a download URL, provider credential, object locator, byte transfer, model read, training, update, submission, dispatch, or aggregation-worker activation.
 
 ## Technical Requirements Analysis
 

@@ -338,6 +338,67 @@ Before implementation, the data design must identify the authoritative mapping f
 
 The test sequence must include domain denials for human/ML-worker principal paths, wrong workload, lease state, expiry, command digest, round, and model binding; application idempotency and redaction tests; migrated PostgreSQL atomicity/replay/one-active-intent tests; controller guard/principal tests; and a future creation-only Azure proof that issues then expires an intent without storage access. The current creation-only proof does not authorize that future proof or any object transfer.
 
+## 24. Prerequisite design — Core-owned verified base-model descriptor mapping
+
+### 24.1 Discovery and decision
+
+The Core schema confirms that `rounds.baseModelVersionId` is an opaque string. It has no foreign-keyed, verified descriptor mapping, while the current `artifact_category` enum has no base-model archive category. Therefore the string cannot safely authorize a Hospital Node read intent: neither a node nor a service may infer checksum, byte size, model digest, preprocessing digest, or artifact identity from it. The read-intent gate is consequently blocked until this separate Core-owned mapping is available. [4]
+
+The next implementation will add a **private verified base-model descriptor registry**, not a retrieval API. It establishes immutable Core facts from an already verified artifact so later Hospital Node policy can prove that the command, round version, and selected base model agree. It will not resolve an object, call storage, issue a capability, return a locator, or let a node choose a model.
+
+### 24.2 Additive schema and descriptor shape
+
+Migration `0012_hospital_node_base_model_descriptors` will add the `base_model_archive` artifact category and the following registry. The existing internal `artifacts.objectKey` remains confined to existing Core storage code; this registry, application service, API, event data, tests, and public documentation must not copy or serialize it.
+
+| Field | Purpose | Boundary rule |
+|---|---|---|
+| `id` | Opaque Core descriptor identity. | Never a provider/object identity. |
+| `federation_id` | Binds the base-model version to its federation. | Must equal the round federation. |
+| `base_model_version_id` | Freezes the existing round string as a Core lookup key. | Unique within federation; never node-selected for an active assignment. |
+| `artifact_id` | References one existing `verified` `base_model_archive` artifact. | Storage locator remains in the artifact repository only. |
+| `model_digest`, `preprocessing_digest` | Immutable training-compatibility facts. | Must match the canonical command before any later intent. |
+| `checksum_sha256`, `byte_size` | Frozen descriptor evidence copied from the verified artifact. | Positive and equal to the verified artifact; no bytes. |
+| `descriptor_digest` | Canonical Base64 SHA-256 digest over the registry’s descriptor-only values. | Calculated by Core, never supplied by a node. |
+| `state` | `active` or `revoked`, with time/audit fields. | Revocation prevents future intents; no replacement mutation. |
+
+The registry will have unique constraints on `(federation_id, base_model_version_id)`, `artifact_id`, and `descriptor_digest`. No update can replace its artifact or descriptor values. A revocation is an additive state transition with a scalar-safe event, not a deletion. The existing round string deliberately stays unchanged in this increment; the mapping gives it authoritative meaning without a breaking round migration.
+
+### 24.3 Authority, workflow, and receipt
+
+Only a private synthetic-validation application service may register a generated descriptor during this first mapping slice. It receives a Core-held artifact identity and registry facts, loads the artifact and federation, and rejects it unless the artifact is `verified`, category `base_model_archive`, federation-bound, positive-size, and checksum-consistent. It computes `descriptor_digest`, writes the immutable registry record, and appends one scalar-safe `base_model_descriptor_registered` hospital-node event attached to the matching generated assignment only when used in a bounded fixture. It creates no assignment, lease, intent, OIDC principal, capability, storage call, dispatch, or outbox event.
+
+The safe registration receipt contains only registry ID, federation ID, base-model version ID, artifact ID, model/preprocessing/descriptor digests, checksum, size, state, and timestamp. It contains no `objectKey`, `objectVersion`, bucket, URL, credential, provider response, content, bytes, local path, patient field, or free-text diagnostic. Exact registration replay returns the same receipt only when all immutable values agree; a changed replay, wrong federation, non-verified artifact, incorrect category, checksum/size mismatch, duplicate version, or duplicate artifact/digest fails without partial writes.
+
+```mermaid
+sequenceDiagram
+  participant V as Private generated-fixture workflow
+  participant S as Descriptor registry service
+  participant R as Descriptor repository
+  participant D as PostgreSQL
+
+  V->>S: Core artifact identity + version + immutable descriptor facts
+  S->>R: load verified base-model archive
+  R->>D: artifact/federation lookup only
+  S->>S: validate and compute descriptor digest
+  S->>R: register immutable descriptor
+  R->>D: transaction: descriptor + scalar-safe event
+  D-->>R: one receipt or exact replay
+  R-->>S: descriptor-only receipt
+  S-->>V: no storage resolution or transfer
+```
+
+### 24.4 Required tests and proof sequence
+
+| Layer | Required evidence | Prohibited behavior |
+|---|---|---|
+| Contract/domain | Canonical digest is deterministic; category/status/federation/size/checksum/revocation rules reject invalid facts. | Accepting node-supplied locator, bytes, provider data, or arbitrary JSON. |
+| Application | Core resolves the artifact itself, returns a redacted receipt, and permits only exact replay. | HTTP, OIDC, lease, intent, capability, storage adapter, or dispatch invocation. |
+| PostgreSQL | Migration and constraints prevent conflicting version/artifact/digest records; atomic registration writes one safe event. | Copying `object_key` into the registry/event/receipt. |
+| Azure deployment | Core Quality Gates, protected release, liveness/readiness, and disabled worker must pass. | Any profile execution before the deployment gate passes. |
+| Bounded future proof | One private generated registry record is registered, replayed exactly, revoked or otherwise closed, and observed only through aggregate-safe facts. | Model download, storage resolution, lease call, read intent, training, update, submission, aggregation, or real hospital data. |
+
+Only after this registry is implemented, deployed, and evidenced may the previously documented base-model-read intent boundary begin. The later intent will consume the registry digest and immutable facts; it will not rediscover or expose an artifact location.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)
@@ -357,3 +418,5 @@ The test sequence must include domain denials for human/ML-worker principal path
 [8] [Private assignment-creation application service](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/application/src/hospital-node-assignment-creation-service.ts)
 
 [9] [Bounded assignment-creation validation runner](https://github.com/hstu-research/federated-aggregator-core/blob/main/infra/validation/bounded-hospital-node-assignment-creation.mjs)
+
+[10] [Core round and artifact schema](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/persistence-postgres/src/schema.ts)

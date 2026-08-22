@@ -49,7 +49,9 @@
 - [x] Increment E — Publish the bounded creation-only composition-proof contract: a new private profile/runner must compose the service for generated facts, prove exact replay, and close the fixture without token, endpoint, lease, capability, transfer, submission, dispatch, or worker activation.
 - [x] Increment F — Implement the documented creation-only profile, runner, and deterministic tests; deploy `0b48aeb`, then run it once only after Azure health and default-disabled worker verification. The proof closed as one expired synthetic assignment, zero active assigned/leased records, one closure event, and zero remaining runners.
 - [x] Increment G — Publish the descriptor-only base-model-read intent contract: lease-bound node-only issuance, Core-owned model descriptor mapping prerequisite, additive receipt/state/event design, exact replay, redaction, and no-storage-access proof requirements.
-- [ ] Increment H — Implement only the documented base-model-read intent boundary and its tests. Do not introduce a download URL, provider credential, object locator, byte transfer, model read, training, update, submission, dispatch, or aggregation-worker activation.
+- [x] Increment H0 — Publish the missing Core-owned verified base-model descriptor mapping contract and additive schema prerequisite. The current `rounds.baseModelVersionId` is an opaque string and the current artifact categories do not represent a verified base-model archive, so it cannot safely support a node read-intent yet.
+- [ ] Increment H1 — Implement and deploy only the documented verified base-model descriptor mapping plus persistence tests. Do not introduce node model-read intent issuance, a download URL, provider credential, object locator, byte transfer, model read, training, update, submission, dispatch, or aggregation-worker activation.
+- [ ] Increment H2 — Resume the documented base-model-read intent boundary only after H1 mapping evidence is recorded and accepted.
 
 ## Technical Requirements Analysis
 

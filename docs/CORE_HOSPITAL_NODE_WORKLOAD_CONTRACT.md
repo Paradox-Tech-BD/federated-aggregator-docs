@@ -166,6 +166,12 @@ Core commit `31e7588` adds reviewed migration `0010_hospital_node_assignments.sq
 
 The full local Core suite again passed with 46 TypeScript tests and 9 Python tests, including migration/integration execution. Core Quality Gates completed successfully in 1 minute 36 seconds and the protected Azure deployment completed successfully for `31e7588f0c57e5f14597e1927b75c5c903a87828`. Public liveness and strict dependency readiness returned HTTP 200 after the migration rollout. The deployment refreshed the existing containers but did not expose or call a hospital-node route; there is still no persistence adapter, controller, audience/guard, Keycloak client, update capability, submission path, real node, hospital data, or worker-gate change.
 
+## 12. Implementation record — distinct identity guard
+
+Core commit `92c6c53` adds `HospitalNodeAuthGuard` as a separate Nest provider. It verifies only the `fedagg-hospital-node` audience, hydrates an active local workload principal, and rejects any principal whose local workload kind is not `hospital_node`. Its tests prove that a correct active hospital-node identity is attached to the workload request and that an active `ml_worker` is refused. The existing `WorkloadAuthGuard` remains bound to the internal `fedagg-worker-callback` audience and is unchanged; no controller currently uses the new guard.
+
+The full local suite passed with 48 TypeScript tests and 9 Python tests, including migration/integration execution. Core Quality Gates completed successfully in 1 minute 42 seconds; the protected Azure deployment completed successfully for `92c6c53a2a690390450c7b7da4ea95ea7b33ef57`; and public liveness/readiness returned HTTP 200. No Keycloak hospital-node client, route, token, capability, assignment persistence adapter, submission path, Node request, hospital data, or worker-gate change was added. The Azure worker still logs its explicit default-disabled state.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)

@@ -172,6 +172,12 @@ Core commit `92c6c53` adds `HospitalNodeAuthGuard` as a separate Nest provider. 
 
 The full local suite passed with 48 TypeScript tests and 9 Python tests, including migration/integration execution. Core Quality Gates completed successfully in 1 minute 42 seconds; the protected Azure deployment completed successfully for `92c6c53a2a690390450c7b7da4ea95ea7b33ef57`; and public liveness/readiness returned HTTP 200. No Keycloak hospital-node client, route, token, capability, assignment persistence adapter, submission path, Node request, hospital data, or worker-gate change was added. The Azure worker still logs its explicit default-disabled state.
 
+## 13. Implementation record — lease repository and migration execution
+
+Core commit `263e596` adds `PostgresHospitalNodeAssignmentRepository` and a migrated-database integration test. The repository returns a lease context only when assignment/workload/participant records agree; recovers an existing `(assignment_id, idempotency_key)` lease; refuses a second active lease; advances the assignment from `assigned` to `leased` only when assignment, workload, digest, and current state all match; and appends one scalar-only `lease_issued` event. The migration journal was updated so migration `0010` executes in automated and deployed databases, and a partial unique index now enforces one active lease per assignment at the database boundary.
+
+The full local suite passed with 49 TypeScript tests and 9 Python tests, including the new migrated-database lease test. Core Quality Gates completed successfully in 1 minute 37 seconds; the protected Azure deployment completed successfully in 2 minutes 49 seconds for `263e596a8e00dd77af476f4310c4c6a0de891839`; and public liveness/readiness returned HTTP 200. This still exposes no controller or route, Keycloak node client, capability, immutable command payload, artifact update intent, submission/reconciliation path, real node, hospital data, or worker-gate change.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)

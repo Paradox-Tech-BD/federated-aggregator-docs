@@ -160,6 +160,12 @@ Core commit `79bdcee` implements the first delivery-order item only: shared assi
 
 The full Core suite passed locally with 46 TypeScript tests (including database integration coverage) and 9 Python tests. GitHub Core Quality Gates completed successfully in 1 minute 32 seconds; the protected Azure deployment also completed successfully for `79bdcee4d336fb0b587e31310b2c341cf220c2ea`. Public liveness and strict dependency readiness both returned HTTP 200 after that policy-only rollout. The existing worker remains default-disabled; no worker profile, environment example, workload credential, or runtime activation change is part of this commit.
 
+## 11. Implementation record — additive persistence slice
+
+Core commit `31e7588` adds reviewed migration `0010_hospital_node_assignments.sql` and matching Drizzle declarations for Core-owned assignment, lease, and append-only safe-event records. The schema constrains every record through existing federation participant, round, and workload foreign keys; makes `(round_id, workload_id)` unique for assignments; makes `(assignment_id, idempotency_key)` unique for leases; and stores only digest, deadline/state, correlation, safe event type, and a scalar-only safe-details object. It contains no data field, path, token, capability, signed URL, object key, artifact byte, or remote response column.
+
+The full local Core suite again passed with 46 TypeScript tests and 9 Python tests, including migration/integration execution. Core Quality Gates completed successfully in 1 minute 36 seconds and the protected Azure deployment completed successfully for `31e7588f0c57e5f14597e1927b75c5c903a87828`. Public liveness and strict dependency readiness returned HTTP 200 after the migration rollout. The deployment refreshed the existing containers but did not expose or call a hospital-node route; there is still no persistence adapter, controller, audience/guard, Keycloak client, update capability, submission path, real node, hospital data, or worker-gate change.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)

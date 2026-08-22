@@ -4,7 +4,7 @@ This documentation portal is a Vite single-page application. It must be deployed
 
 | Setting | Value | Rationale |
 |---|---|---|
-| Repository | `paradox-tech-bd/federated-aggregator-docs` | The public documentation decision ledger. |
+| Repository | `hstu-research/federated-aggregator-docs` | The public documentation decision ledger. |
 | Branch | `main` | Each merged documentation decision becomes deployable. |
 | Build command | `pnpm install --frozen-lockfile && pnpm vercel-build` | Uses the committed dependency lockfile and the static Vite build already verified for Vercel. |
 | Publish directory | `./dist/public` | The portal’s Vite configuration explicitly emits the static application under `dist/public`. |

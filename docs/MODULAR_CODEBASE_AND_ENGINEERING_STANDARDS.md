@@ -1,6 +1,6 @@
 # Modular Codebase Architecture and Engineering Standards
 
-**Status:** Research-backed engineering specification; prerequisite to scaffolding `paradox-tech-bd/federated-aggregator-core`.  
+**Status:** Research-backed engineering specification; prerequisite to scaffolding `hstu-research/federated-aggregator-core`.  
 **Applies to:** The Aggregator Core only: its NestJS control plane, Node dispatch worker, Python/PyTorch ML worker, shared contracts, infrastructure, and verification harness.  
 **Does not apply to:** Hospital products, hospital clinical systems, end-user portals, blockchain/IPFS, billing, or patient-data systems.
 
@@ -44,7 +44,7 @@ The codebase forbids an unrestricted `common/`, `utils/`, `helpers/`, or `shared
 
 ## 3. Repository topology
 
-The implementation will begin in a new repository: `paradox-tech-bd/federated-aggregator-core`. The existing `thesis_breast_cancer` clean-room repository remains a scientific reference and fixture source. It is not imported as a production package because its scope includes hospital/admin shells and optional coordination experiments that are outside the first Aggregator Core product.
+The implementation is hosted in `hstu-research/federated-aggregator-core`. The existing `hstu-research/thesis_breast_cancer` clean-room repository remains a scientific reference and fixture source. It is not imported as a production package because its scope includes hospital/admin shells and optional coordination experiments that are outside the first Aggregator Core product.
 
 ```text
 federated-aggregator-core/

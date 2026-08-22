@@ -8,6 +8,13 @@
 - [ ] Commit and push the documentation update using the user's configured Git identity.
 - [ ] Deliver the analysis and identify the next architecture decision gate.
 
+## GitHub Organization Migration to hstu-research
+
+- [ ] Inventory every organization-bound reference across the Core, documentation, administrator portal, thesis, Git remotes, GitHub Actions, deployment workflows, and hosted-service configuration.
+- [x] Transfer `federated-aggregator-core`, `federated-aggregator-docs`, `federated-aggregator-admin-portal`, and `thesis_breast_cancer` to `hstu-research` while preserving repository visibility, history, and default branches.
+- [ ] Update local repository remotes, source metadata, badges, CI/CD workflow references, Azure deployment scripts, and documentation links to make `hstu-research` authoritative.
+- [ ] Verify the transferred repository URLs, GitHub Actions visibility, Azure deployment source path, and documentation build; record the result in the public research chronology and publish a documentation checkpoint.
+
 ## Technical Requirements Analysis
 
 - [x] Inventory the earlier clean-room Node.js services, Python ML core, documentation product, tests, and contracts.
@@ -108,7 +115,7 @@
 
 ## Product-Core Phase 0–1 Implementation Kickoff
 
-- [x] Create the private `paradox-tech-bd/federated-aggregator-core` repository with the user's Git identity and a clear Phase 0–1 README/ADR index.
+- [x] Establish the private `hstu-research/federated-aggregator-core` repository with the user's Git identity and a clear Phase 0–1 README/ADR index.
 - [x] Establish pnpm and Python workspace roots, strict lint/type/format/testing configuration, local dependency definitions, CI, secret policy, and synthetic-fixture policy.
 - [x] Create framework-free TypeScript contracts, domain, application-port, test-kit, and configuration packages with enforced dependency direction.
 - [x] Implement local user, organization, membership, workload, federation, protocol, and round domain types/invariants with explicit OIDC/Clerk-ready and workload-identity ports.
@@ -158,7 +165,7 @@
 ## Product-Core Phase 7 Human Administrator Portal
 
 - [x] Research an administrator portal as a separate human-facing product, defining platform-admin and federation-owner boundaries, safe read models, explicit confirmation, accessibility, and preview-state constraints.
-- [x] Create private `paradox-tech-bd/federated-aggregator-admin-portal` with React, TypeScript, Vite, a clinical instrument-panel design, source-only repository hygiene, and validated production build.
+- [x] Maintain private `hstu-research/federated-aggregator-admin-portal` with React, TypeScript, Vite, a clinical instrument-panel design, source-only repository hygiene, and validated production build.
 - [x] Add Core candidate/release governance summaries and federation-owner-protected API reads without returning artifact/model bytes, raw event payloads, patient data, evidence payloads, release envelopes, or policy internals.
 - [x] Implement safe delivery, lineage, and review-only retention surfaces; require a named target, non-empty reason, explicit consequence, and submitted state for retry/dead-letter actions.
 - [x] Verify Core CI (36 TypeScript plus 4 Python tests), PostgreSQL portal-read integration coverage, and portal production build; commit and push both private repositories with the user Git identity.
@@ -364,7 +371,7 @@
 - [x] Keep the Core on its direct Redis URL for the Azure test environment. Do not introduce Sentinel-aware application connections until a stable, repeatable promotion is proven in an isolated topology.
 - [ ] Investigate the recurring Sentinel tilt/no-good-slave behavior in a future dedicated resilience pass before considering Redis Sentinel as a Core availability dependency.
 - [ ] Configure Docker build/start settings, health/readiness checks, non-secret configuration validation, and explicit separation from the existing Azure test deployment for each Render service.
-- [x] Grant Render App access only to `Paradox-Tech-BD/federated-aggregator-core`, then stage the separate API service with the `main` branch, Singapore region, and tested `infra/deploy/Dockerfile.node` build path.
+- [ ] Update the Render GitHub App installation to grant access only to `hstu-research/federated-aggregator-core`, then revalidate the separate API service’s `main` branch and tested `infra/deploy/Dockerfile.node` build path.
 - [x] Stage the API service’s protected runtime variables in Render, including explicit test-only OIDC placeholders; Render masks variable values in the service form, and the selected Starter instance requires active Render billing before service creation can complete.
 - [x] Configure the staged API service with `/health/ready`, Docker command `node apps/api/dist/main.js`, and a pre-deploy compiled migration command; no persistent disk or registry credential is configured.
 - [ ] Complete Render’s final free-tier service-form validation and create the API; free-tier controls cleared the pre-deploy migration field, so migrations must be run separately through the approved database path.

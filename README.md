@@ -14,6 +14,6 @@ The first product includes the aggregator control plane and its future admin/res
 
 ## Related repositories
 
-- Documentation product: `paradox-tech-bd/federated-aggregator-docs`
-- Future runtime product: `paradox-tech-bd/federated-aggregator-core`
-- Legacy research rebuild reference: `paradox-tech-bd/thesis_breast_cancer`
+- Documentation product: `hstu-research/federated-aggregator-docs`
+- Runtime product: `hstu-research/federated-aggregator-core`
+- Research rebuild reference: `hstu-research/thesis_breast_cancer`

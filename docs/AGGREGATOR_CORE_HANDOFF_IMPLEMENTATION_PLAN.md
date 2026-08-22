@@ -1,7 +1,7 @@
 # Aggregator Core — Handoff Implementation Plan
 
 **Plan status:** Ready for product-core repository handoff; no production backend has been scaffolded under this plan.  
-**Target repository:** `paradox-tech-bd/federated-aggregator-core`  
+**Target repository:** `hstu-research/federated-aggregator-core`  
 **First product boundary:** Federated Aggregator Core control plane and its future administrator portal.  
 **Explicitly out of scope:** Hospital backend/frontend products, clinical workflow integrations, raw patient data, blockchain/IPFS, cryptocurrency, wallet-required access, model marketplace/billing, and automatic clinical deployment.
 
@@ -236,7 +236,7 @@ No CI fixture includes raw breast images, patient identifiers, hospital-network 
 | Select persistence proof of concept | Compare migration/ORM candidates against transaction/outbox, SQL constraints, and testability. | A short spike selects one tool without weakening repository-port boundary. |
 | Select Python toolchain | Approve `pyproject` lock approach and type checker. | Reproducible worker environment passes basic CI. |
 | Freeze v1 contracts | Approve OpenAPI and worker schema ownership/version rules. | Golden fixtures committed before dispatcher/worker integration. |
-| Create repository and baseline CI | Create `paradox-tech-bd/federated-aggregator-core` privately with the planned layout. | Phase 0 exit gate passes. |
+| Create repository and baseline CI | Maintain `hstu-research/federated-aggregator-core` privately with the planned layout. | Phase 0 exit gate passes. |
 
 ## 11. Decisions awaiting explicit user confirmation
 

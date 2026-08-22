@@ -412,6 +412,27 @@ Local full quality passed with **68 TypeScript tests and 9 Python tests**. Core 
 
 The mapping prerequisite is complete. The next code increment may now implement the previously documented `hospital-node-base-model-read-intent/v1` issuance boundary, but only as a guarded descriptor-only receipt. It must consume the active registry’s immutable digest and facts, not any storage location. Before code, its exact domain/application/persistence/controller test set and migration must remain aligned to Section 23; before a future Azure run, the route must be deployed, liveness/readiness and the disabled worker must be verified, and its separate proof must issue then expire an intent without storage access.
 
+## 27. Implementation record — guarded descriptor-only base-model-read intent
+
+Core commit `d9b55fc` implements migration `0013_hospital_node_base_model_read_intents`, a `issued`/`expired`/`revoked` receipt-state vocabulary, one active intent per lease, assignment/idempotency replay protection, positive descriptor size, and scalar-safe `base_model_read_intent_issued` evidence. It adds only `POST /v1/workload-assignments/:assignmentId/base-model-read-intents` under the existing dedicated `HospitalNodeAuthGuard`. The request supplies only a UUID idempotency key; the verified workload ID comes from the guard. The application service derives lease, command, round, descriptor, digest, checksum, size, correlation, and expiry from Core facts.
+
+The private repository rechecks active `hospital_node` workload, leased assignment, active matching lease, open round, active descriptor, Core-bound federation/version mapping, unmodified command digest, and model/preprocessing/checksum/size equality before one receipt write. Exact replay returns the same receipt; a changed replay or competing active lease intent fails. The serialized result is `hospital-node-base-model-read-intent/v1` and carries only IDs, command/descriptor digests, checksum, size, state, and expiry. It has no object key, object version, bucket, URL, credential, provider response, model bytes, preprocessing payload, or patient field. The service and repository do not import a storage adapter, issue a capability, resolve an object, enqueue work, or perform training/submission.
+
+Local full quality passed with **77 TypeScript tests and 9 Python tests**, including domain denials, application redaction, guarded-controller binding, and three migrated PostgreSQL atomicity/replay/one-active-intent tests. Core Quality Gates completed in **1 minute 54 seconds** and protected Azure deployment completed in **2 minutes 48 seconds**. Azure liveness/readiness returned HTTP 200; the aggregation worker stayed default-disabled. The route is deployed but has not yet been invoked in Azure, so this is implementation and deployment evidence only—not model access or transfer evidence.
+
+## 28. Next documented delivery gate — one-shot read-intent issuance and expiry proof
+
+The next validation is a new opt-in Compose profile named `hospital-node-base-model-read-intent-validation`. It will reuse only the existing separate `hospital-node-synthetic` Keycloak client and its protected file reference to authenticate the guarded Core request; it will not reuse the ML-worker identity, callback, audience, or secret. The profile will have no public port, no daemon behavior, no aggregation-worker enablement, and no storage/MinIO/S3 client or resolution call. Normal deployment must not start it.
+
+| Proof step | Allowed action and evidence | Must remain absent |
+|---|---|---|
+| Generated prerequisites | Seed one generated organization/federation/workload/participant/protocol/open round, Core descriptor mapping, canonical command, assigned record, and active lease. Any database-only object reference required by the existing artifact schema stays internal and is never printed or returned. | Patient/image/data field, provider request, object resolution, URL, credential, bytes, hospital record, or real node. |
+| Separate identity | Obtain one private token for the existing `fedagg-hospital-node` client and call only the guarded read-intent route once. | ML-worker identity/callback, human route, token/secret output, endpoint reuse, or a public service. |
+| Receipt checks | Assert the `issued` state, matching assignment/lease/descriptor/command digest, and absence of object key, object version, URL, credential, provider response, and byte payload in the serialized response. | Download, storage metadata call, capability resolution, training, update, submission, dispatch, or aggregation. |
+| Terminal closure | Mark the synthetic intent, lease, and assignment expired; write one `bounded_read_intent_closed` scalar-safe event; report aggregate closure counts and zero runner instances. | Active fixture, repeated route call, artifact movement, provider claim, model-read assertion, or worker enablement. |
+
+The runner may write generated prerequisite facts and terminal cleanup directly only because they are Core-internal fixture setup/closure. It must not insert the intent itself: intent issuance under proof must occur through the guarded HTTP route and the new application service/repository. It must emit only safe success/failure markers. After deployment, the profile may run exactly once only after current release health and disabled-worker checks pass. This proof establishes authorization receipt issuance and closure only; it cannot establish storage access, a download, local training, model update, submission, aggregation, hospital connection, or clinical use.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)
@@ -435,3 +456,5 @@ The mapping prerequisite is complete. The next code increment may now implement 
 [10] [Core round and artifact schema](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/persistence-postgres/src/schema.ts)
 
 [11] [Verified base-model descriptor registry](https://github.com/hstu-research/federated-aggregator-core/blob/main/packages/persistence-postgres/src/hospital-node-base-model-descriptor-repository.ts)
+
+[12] [Descriptor-only read-intent controller](https://github.com/hstu-research/federated-aggregator-core/blob/main/apps/api/src/hospital-node-assignments/hospital-node-assignments.controller.ts)

@@ -190,6 +190,12 @@ Core commit `0fd4e4b` adds the first dedicated hospital-node HTTP route: `POST /
 
 The controller test proves principal-derived workload binding and checks that the response serialization has neither `objectKey` nor `credential`. Full local CI passed with 50 TypeScript tests and 9 Python tests, including migration/integration execution. Core Quality Gates completed successfully in 1 minute 38 seconds; the protected Azure deployment completed successfully in 2 minutes 44 seconds for `0fd4e4b853fc46fa6afc3ef33a2ba8835e208c2f`; and public liveness/readiness returned HTTP 200. The route was not invoked against Azure because no hospital-node Keycloak client or pre-created assignment exists yet. There is still no assignment-creation route, Keycloak node client, base-model/update capability, artifact transfer, update submission/reconciliation route, real node connection, hospital data, or worker-gate change.
 
+## 16. Decision before bounded endpoint proof — synthetic node identity and assignment fixture
+
+The first endpoint proof will use one new **private Keycloak service client**, `hospital-node-synthetic`, with the `fedagg-hospital-node` audience and fixed `hospital_node` workload-kind claim. It will have its own Docker secret and host-side protected secret file; it will never reuse the `ml-worker` client, secret, audience, callback route, or workload mapping. Its token request, workload registration, synthetic federation/participant/round/assignment creation, and `POST /v1/workload-assignments/:assignmentId/lease` call will run only inside an opt-in bounded validation profile on the Core network.
+
+The fixture will write only synthetic organization/federation/round metadata, a generated canonical command, digest/checksum/size descriptors, and allowlisted safe events. The profile must terminate after one expected lease response; the created assignment must be expired or otherwise made non-reusable immediately afterward, and the normal aggregation worker must remain default-disabled throughout. This proves audience separation, principal binding, canonical command retrieval, and idempotent lease behavior—not object transfer, training, update submission, clinical use, or a continuously operating hospital node.
+
 ## References
 
 [1] [Hospital Node Agent Engineering and API Design](https://github.com/hstu-research/federated-aggregator-docs/blob/main/docs/HOSPITAL_NODE_AGENT_ENGINEERING_AND_API.md)
